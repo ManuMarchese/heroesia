@@ -38,3 +38,29 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
 - **Por qué:** poco pero redondo; los amigos lo usan pronto y el uso real guía lo demás.
 - **Tensión abierta:** D4 elige "biblioteca viva" y D6 deja la búsqueda fuera de la v0.1. Falta decidir qué mínimo de orden entra (tipos, tags, "lo probé") para que el feed no sea otro chat. Se resuelve en las Rondas 2 y 3.
+
+## Ronda 2: Gamificación (2026-10-03)
+
+### D7. XP mixto: la práctica pesa más
+- **Qué:** entrar, leer y publicar da poco XP, con tope diario. Marcar "Lo probé ✓" con el resultado propio, o dar feedback útil, da mucho XP. Un solo gesto ("Lo probé ✓") alimenta la biblioteca (señal de calidad) y el progreso (XP). Los valores y el tope se definen en el diseño y se ajustan con uso real.
+- **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
+- **Por qué:** premia el hábito y el aprendizaje real, y evita que el XP se infle por volumen (criterio de diseño, no un dato verificado).
+- **Implicación (orquestador, a confirmar en el PLAN):** "Lo probé ✓" entra en la v0.1, porque es el gesto que da XP. Eso resuelve en parte la tensión de D6: el orden mínimo de la v0.1 son los tipos de D5 más "Lo probé ✓".
+- **Costo / riesgo asumido:** hace falta un tope diario y definir cómo se valida un "feedback útil" (por ejemplo, con el reconocimiento de otro miembro). Queda para el diseño.
+
+### D8. Social: equipo + tu propio récord
+- **Qué:** misión semanal compartida (el equipo suma hacia una meta común) y cada persona se mide contra su mejor marca (PB, como en speedcubing). Sin ranking público, coherente con D3.
+- **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
+- **Por qué:** con 5 a 15 personas, una tabla desmotiva a los últimos (criterio de diseño, no un dato verificado).
+- **Abierto:** quién define la misión semanal. Se pregunta en la Ronda 4.
+
+### D9. Recompensa: rango y clase de héroe
+- **Qué:** rangos por nivel y una clase según el estilo de aporte. Los nombres Builder, Scout, Curador y Mentor son solo ejemplos; nombres y reglas se definen en el diseño. "Poder real en el grupo", "Insignias y colección" y "Premios reales" no se eligieron: quedan fuera de la v0.1, sin descartarlas para después.
+- **Quién:** [Manu, 2026-10-03]. Marcó solo esta opción.
+- **Por qué:** combina con el nombre del app (criterio de diseño).
+
+### D10. Sin avisos en la v0.1
+- **Qué:** la v0.1 no envía avisos: ni push, ni resumen automático, ni bot de WhatsApp.
+- **Quién:** [Manu, 2026-10-03]. Eligió "Sin avisos en v0.1" en lugar de la recomendada (resumen semanal + push); no dio otro motivo.
+- **Por qué:** es lo más simple de construir.
+- **Costo / riesgo asumido:** sin avisos ni ranking público (D3, D8), el único empujón para volver es el grupo de WhatsApp. Si nadie se acuerda de abrir el app, la actividad puede caer. Mitigación propuesta por el orquestador, sin decidir: botón "Copiar resumen semanal" para pegar en el grupo. Se pregunta en la Ronda 3.
