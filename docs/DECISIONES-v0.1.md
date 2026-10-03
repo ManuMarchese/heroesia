@@ -128,3 +128,27 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Quién:** orquestador (propuesta). **Pendiente de aprobación de Manu** en el PLAN.
 - **Por qué:** la meta es hoy (D19) y cuatro rondas de preguntas ya cubren lo que discutirían los dos planeadores y el juez. Como toca login, SQL y claves, se mantienen el Investigador, la separación Builder/Guardián y el checklist manual.
 - **Costo / riesgo asumido:** M renuncia al cruce adversarial de dos planeadores; el Guardián y la revisión del orquestador cubren ese riesgo.
+
+## Puerta del PLAN (2026-10-03)
+
+### D21. PLAN-v0.1 aprobado con tamaño M
+- **Qué:** se aprueba el `PLAN-v0.1.md` tal como estaba, con tamaño M (D20), incluidas las propuestas de la sección 3 (valores de XP, clases, campos de los aportes) y "Lo probé ✓" dentro de la v0.1. Se revisan en el checklist manual. D2 (L) queda como historial.
+- **Quién:** [Manu, 2026-10-03]. Eligió "Aprobado con M".
+- **Por qué:** la meta es hoy (D19).
+
+### D22. Acceso: link mágico por email
+- **Qué:** los amigos entran con un link mágico por email, sin clave. Manu eligió esta opción en lugar de la recomendada (código de invitación + email y clave).
+- **Quién:** [Manu, 2026-10-03]. No dio otro motivo.
+- **Costo / riesgo asumido:** depende de que el email llegue y de los límites de envío del plan gratis (**NO VERIFICADO**). Por eso Q1 del Investigador pasa a ser bloqueante: si no alcanza, el plan B es un servicio de email propio (gasto que decide Manu, D16) o volver a email y clave.
+- **Pendiente derivado (orquestador):** el plan decía "acceso por invitación". Con link mágico hay que decidir cómo se controla quién entra. Propuesta por defecto: un código de invitación compartido que se pide junto con el email y se puede cambiar. El Investigador verifica qué opciones soporta Supabase (Q8) y Manu confirma con la evidencia.
+
+### D23. Misión semanal: capitán rotativo
+- **Qué:** cada semana define la misión una persona distinta del grupo. Manu eligió esta opción en lugar de la recomendada (plantillas rotativas).
+- **Quién:** [Manu, 2026-10-03]. No dio otro motivo.
+- **Costo / riesgo asumido:** necesita reglas y la semana puede quedar sin misión.
+- **Reglas por defecto (propuesta del orquestador; Manu puede vetarlas):** (1) el capitán de cada semana se calcula por orden de ingreso y rota semana a semana, sin tarea programada; (2) el capitán elige qué acción cuenta (probar, leer, dar feedback o publicar) y la meta; (3) si no la define a tiempo, rige una misión de reemplazo de una lista fija; (4) el progreso se cuenta solo; (5) la semana va de lunes a domingo, hora de Buenos Aires (**NO VERIFICADO:** supuesto sobre dónde viven los amigos).
+
+### D24. Arranque sin contenido semilla: misión inicial
+- **Qué:** el día 1 la app arranca vacía y la primera misión es "cada uno suma 2 aportes". Manu eligió esta opción en lugar de la recomendada (contenido semilla). El contenido semilla pasa a opcional: si Manu pasa links, se cargan.
+- **Quién:** [Manu, 2026-10-03].
+- **Costo / riesgo asumido:** la primera pantalla puede verse vacía y depende de que todos entren el primer día. Mitigación: estados vacíos con un llamado a sumar el primer aporte y la misión inicial en la pantalla de inicio.
