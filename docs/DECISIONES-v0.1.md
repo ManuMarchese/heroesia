@@ -90,3 +90,41 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
 - **Por qué:** el chat que ya usan hace de aviso, sin costo ni integraciones.
 - **Costo / riesgo asumido:** suma una pieza chica al alcance de D6. Confirmar el tamaño en el PLAN.
+
+## Ronda 4: look y restricciones (2026-10-03)
+
+### D15. Look A · Cómic
+- **Qué:** la estética es "A · Cómic": fondo azul héroe, paneles blancos con borde grueso y sombra dura, acentos amarillo, rosa y menta; Lilita One + Nunito. Fuente de verdad: `docs/diseno/TOKENS.md` y `docs/diseno/look-a-comico.dc.html` (copia del prototipo, solo referencia visual).
+- **Quién:** [Manu, 2026-10-03]. Eligió la letra A entre A, B y C.
+- **Por qué:** lo eligió Manu. Criterio de diseño del orquestador: es el más divertido y el más cansador para el uso diario.
+- **Evidencia:** prototipo con datos de ejemplo en https://claude.ai/artifact/Jt48RNP9nibJrKxnxWVTSD (privado). **NO VERIFICADO:** el orquestador no lo abrió en un navegador y los contrastes están calculados a mano. Mobbin no se pudo usar (pide plan pago), así que los tres looks son criterio propio, sin referencias de apps reales. Tropiezo mío: ofrecí Mobbin como disponible sin haberlo probado.
+- **Costo / riesgo asumido:** look intenso para el uso diario. Los tokens van como variables CSS para poder suavizarlo después.
+
+### D16. Gasto: sin decidir; lo decide Manu desde Claude Desktop
+- **Qué:** esta sesión en la nube no gasta ni decide gastos. El gasto (planes, dominio) lo decide Manu al desplegar, desde Claude Desktop.
+- **Quién:** [Manu, 2026-10-03]: "eso luego, lo voy a hacer desde mi claude desktop. ahora estamos en sesion en la nube".
+- **Por qué:** separa el diseño y el código (acá) del gasto y el deploy (Desktop).
+- **Evidencia:** **NO VERIFICADO.** Supuesto de trabajo del orquestador, no decisión de Manu: el diseño apunta a que alcancen los planes gratis de Vercel y Supabase. Los límites los verifica el Investigador (Q1 a Q3).
+
+### D17. Cuentas de partida: Vercel y Supabase
+- **Qué:** Manu ya tiene cuentas en Vercel (publicar) y Supabase (base de datos y login). Son el punto de partida. No declaró nada prohibido.
+- **Quién:** [Manu, 2026-10-03]: "ya tengo cuentas en vercel y supabase".
+- **Por qué:** aprovecha lo que ya tiene.
+- **Evidencia:** **NO VERIFICADO:** las cuentas y sus planes (no se vieron, sin captura). Los secretos (claves de Supabase) los carga Manu en las variables de entorno de Vercel, nunca por el chat.
+
+### D18. El deploy lo hace Manu desde Claude Desktop
+- **Qué:** en esta sesión no se despliega ni se crea o cambia nada en Vercel ni en Supabase. El código queda en la rama de trabajo; Manu aplica el SQL en Supabase, carga las variables y despliega desde Desktop. Aunque hay herramientas de Vercel conectadas a la sesión, no se usan salvo pedido de Manu.
+- **Quién:** [Manu, 2026-10-03]: "desde desktop deployeo".
+- **Por qué:** el deploy es una puerta de Manu en el framework, y así se evitan gastos no decididos (D16).
+
+### D19. Meta de tiempo: la v0.1 hoy
+- **Qué:** Manu quiere la v0.1 lista hoy, en una sola sesión.
+- **Quién:** [Manu, 2026-10-03]: "hoy, apps asi las hago en una sesion ez".
+- **Por qué:** que los amigos la prueben ya.
+- **Costo / riesgo asumido:** "hoy" solo es viable si la v0.1 se queda en el alcance de D6 y D12 a D14. Los pasos manuales de Manu (SQL, variables, deploy desde Desktop) corren por su cuenta.
+
+### D20. Tamaño del proceso: propuesta M (reemplaza la propuesta L de D2)
+- **Qué:** M en lugar de L: plan breve aprobado → Investigador mínimo → Builder → Guardián → deploy de Manu. D2 queda como historial.
+- **Quién:** orquestador (propuesta). **Pendiente de aprobación de Manu** en el PLAN.
+- **Por qué:** la meta es hoy (D19) y cuatro rondas de preguntas ya cubren lo que discutirían los dos planeadores y el juez. Como toca login, SQL y claves, se mantienen el Investigador, la separación Builder/Guardián y el checklist manual.
+- **Costo / riesgo asumido:** M renuncia al cruce adversarial de dos planeadores; el Guardián y la revisión del orquestador cubren ese riesgo.
