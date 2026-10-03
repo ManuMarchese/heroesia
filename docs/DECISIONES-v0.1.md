@@ -64,3 +64,29 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Quién:** [Manu, 2026-10-03]. Eligió "Sin avisos en v0.1" en lugar de la recomendada (resumen semanal + push); no dio otro motivo.
 - **Por qué:** es lo más simple de construir.
 - **Costo / riesgo asumido:** sin avisos ni ranking público (D3, D8), el único empujón para volver es el grupo de WhatsApp. Si nadie se acuerda de abrir el app, la actividad puede caer. Mitigación propuesta por el orquestador, sin decidir: botón "Copiar resumen semanal" para pegar en el grupo. Se pregunta en la Ronda 3.
+
+## Ronda 3: UI/UX, estructura (2026-10-03)
+
+### D11. Celular primero
+- **Qué:** se diseña primero para celular, como web que se abre con un link y se agrega a la pantalla de inicio (sin tiendas). En la compu se adapta.
+- **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
+- **Por qué:** un solo código para celular y compu, y los amigos lo prueban antes (criterio de diseño).
+- **Evidencia:** **NO VERIFICADO**: los pasos exactos para agregarla a la pantalla de inicio en iPhone y en Android. Va al Investigador.
+
+### D12. Pantalla de inicio: "Base del héroe"
+- **Qué:** al abrir, cada uno ve en una sola pantalla su nivel y XP, la misión semanal del equipo y "Lo nuevo" (con "✓ n lo probaron"). Navegación inferior: Inicio · Explorar · + · Perfil. "Explorar" muestra los aportes por tipo; la búsqueda por texto sigue pendiente (D6).
+- **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
+- **Por qué:** une los dos motores de D4 (biblioteca y progreso).
+- **Evidencia:** boceto con datos de ejemplo mostrado en la Ronda 3 de la sesión.
+
+### D13. Publicar: link + ficha mínima
+- **Qué:** se pega el link; el app intenta traer título e imagen (sin IA); la persona elige el tipo (D5) y suma una línea de por qué sirve. La ficha automática con IA queda para después de la v0.1.
+- **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
+- **Por qué:** menos fricción sin sumar costo por uso, claves ni puntos de falla (criterio de diseño).
+- **Evidencia:** **NO VERIFICADO**: qué sitios bloquean la lectura automática de título e imagen. Si falla, la persona completa a mano. Va al Investigador.
+
+### D14. Botón "Copiar resumen semanal"
+- **Qué:** un botón arma el texto "lo mejor de la semana + misión + quién subió de nivel" para pegarlo en el WhatsApp del grupo. No envía nada solo. Mitiga el riesgo de D10.
+- **Quién:** [Manu, 2026-10-03]. Aceptó la opción recomendada.
+- **Por qué:** el chat que ya usan hace de aviso, sin costo ni integraciones.
+- **Costo / riesgo asumido:** suma una pieza chica al alcance de D6. Confirmar el tamaño en el PLAN.
