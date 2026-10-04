@@ -1,6 +1,6 @@
-# STATE: v0.1 etapa 4, Guardián rechazó una vez; pasada 3 de correcciones en curso (2026-10-04)
+# STATE: v0.1 detenida por el límite de uso; faltan 3 correcciones del Guardián (2026-10-04)
 
-**Estado en una línea:** las dos pasadas del Builder están hechas y verificadas (D34, D36), pero el Guardián rechazó `5ef6499` con 3 bloqueantes (D37: redirección abierta, mensaje del invitado sin aceptar, XP de "Entrar" que tarda una apertura). El Builder corrige en la pasada 3 (D38); después, segunda revisión del Guardián. Si rechaza otra vez, parada de D25. Producción: no hay.
+**Estado en una línea:** las dos pasadas del Builder están hechas, verificadas (D34, D36) y subidas (`9a698a0`), pero el Guardián rechazó `5ef6499` con 3 bloqueantes (D37: redirección abierta, mensaje del invitado sin aceptar, XP de "Entrar" que tarda una apertura). La pasada 3 que los corrige se cortó por el límite semanal de uso sin escribir nada (D39) y Manu pidió seguir desde Claude Desktop. Producción: no hay.
 
 ## Si retomás esta sesión (leer en este orden)
 1. Este archivo. 2. `PLAN-v0.1.md`. 3. `docs/DECISIONES-v0.1.md` (D34 a D36 son lo último). 4. `docs/SETUP-MANU.md` y `docs/CHECKLIST-MANUAL-v0.1.md`. 5. `docs/INVESTIGACION-v0.1.md`. 6. `docs/diseno/TOKENS.md`. 7. `README.md` (cómo correr, probar y el humo).
@@ -17,9 +17,9 @@ Preparación del clon: `git fetch origin main && git remote set-head origin main
 - Rollback: no hay producción previa; el freno real es quitar `NEXT_PUBLIC_SUPABASE_*` y redesplegar (falla cerrado), pausar Supabase o borrar el proyecto de Vercel; con la base vacía, el SQL de vaciado de D38 (va a `SETUP-MANU.md`).
 
 ## Próximos pasos (con costo)
-1. Builder pasada 3 (en curso, Opus, agente genérico): correcciones de D38 con tests y guías corregidas → yo verifico en copia limpia y con el humo, y hago `git push`. Costo: 0 créditos de hosting.
-2. Segunda revisión del Guardián (agente nuevo, independiente): verifica los arreglos y repasa el diff contra `main` → `VEREDICTO: APROBADO | RECHAZADO`. Si rechaza otra vez, parada de D25 y le pregunto a Manu.
-3. Si APROBADO: Manu, desde Claude Desktop, sigue `docs/SETUP-MANU.md` (SMTP propio con dominio verificado, apagar registros públicos, aplicar el SQL, invitar amigos, variables en Vercel, deploy) y prueba con `docs/CHECKLIST-MANUAL-v0.1.md`. Costo: lo decide Manu (D16).
+1. **Aplicar las correcciones de D38** (sin hacer): redirección abierta, mensaje del invitado sin aceptar, XP de "Entrar" en la primera apertura, límite de 'entrar' en la base, Salir local, cabeceras básicas, guías y rollback; cada una con tests. La lista exacta está en D37 y D38: se puede relanzar el Builder con ella o hacerlas a mano. Costo: 0 créditos de hosting; sí uso de Claude.
+2. Segunda revisión del Guardián (agente nuevo, independiente) sobre el diff contra `main` → `VEREDICTO: APROBADO | RECHAZADO`. Si rechaza otra vez, parada de D25.
+3. Manu, desde Claude Desktop, sigue `docs/SETUP-MANU.md`: SMTP propio con dominio verificado, apagar registros públicos, aplicar el SQL, invitar amigos y cargar las variables en Vercel. La app exige solo `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (más `GITHUB_TOKEN`, opcional); nunca `HEROES_DEMO` ni la clave secreta. Prueba con `docs/CHECKLIST-MANUAL-v0.1.md`. Costo: lo decide Manu (D16).
 4. Cierre: STATE, DECISIONES, APRENDIZAJES y `verificar-traspaso.sh`.
 **Paradas de la autonomía (D25):** una decisión de Manu cambia, el Guardián rechaza dos veces, o hace falta gasto, merge o deploy.
 
@@ -44,7 +44,7 @@ Preparación del clon: `git fetch origin main && git remote set-head origin main
 ## Vence (revisar en cada arranque)
 | Qué | Fecha | Qué hacer |
 |---|---|---|
-| Reporte del Builder, pasada 3 | Al terminar el agente | Verificar en copia limpia y con el humo, `git push`, registrar en DECISIONES y lanzar la 2.ª revisión del Guardián |
+| Correcciones de D38 | Antes de invitar a los amigos | Aplicarlas, verificarlas en copia limpia y con el humo, y pedir la 2.ª revisión del Guardián |
 | `lanzamiento_en` = 2026-10-05 | Antes de invitar | Que Manu lo fije si lanza en fin de semana (SETUP-MANU, paso 8) |
 
 ## Reglas que no se negocian
