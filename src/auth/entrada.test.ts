@@ -24,7 +24,7 @@ describe("formulario de /entrar", () => {
         paso: "codigo",
         email: "ana@example.com",
         destino: "/perfil",
-        aviso: expect.stringContaining("código de 6 dígitos"),
+        aviso: expect.stringContaining("Abrí el link del mail"),
         error: null,
       },
     });

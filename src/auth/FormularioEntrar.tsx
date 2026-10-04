@@ -33,7 +33,7 @@ export function FormularioEntrar({ destino, errorInicial }: { destino: string; e
         />
         {error}
         <button type="submit" className="boton boton--primario" disabled={pendiente}>
-          {pendiente ? "Mandando..." : "Mandame el código"}
+          {pendiente ? "Mandando..." : "Mandame el mail"}
         </button>
       </form>
     );
@@ -47,7 +47,7 @@ export function FormularioEntrar({ destino, errorInicial }: { destino: string; e
         <input type="hidden" name="next" value={estado.destino} />
         <input type="hidden" name="email" value={estado.email} />
         <label htmlFor="codigo" className={estilos.etiqueta}>
-          Código de 6 dígitos
+          Código de 6 números (si el mail lo trae)
         </label>
         <input
           id="codigo"
@@ -68,7 +68,7 @@ export function FormularioEntrar({ destino, errorInicial }: { destino: string; e
       <div className={estilos.secundarias}>
         {(
           [
-            ["pedir", "Mandar otro código"],
+            ["pedir", "Mandar otro mail"],
             ["otro-email", "Usar otro email"],
           ] as const
         ).map(([valor, texto]) => (

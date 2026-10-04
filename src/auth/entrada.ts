@@ -8,8 +8,8 @@ export type PasoSiguiente = { estado: EstadoEntrar } | { redirigir: string };
 
 export function avisoCodigoEnviado(email: string): string {
   return (
-    `Te mandamos un mail a ${email}. Abrí el link o escribí acá el código de 6 dígitos. ` +
-    "Si usás la app instalada en iPhone, mejor el código."
+    `Te mandamos un mail a ${email}. Abrí el link del mail para entrar. ` +
+    "Si el mail trae un código de 6 números, escribilo acá (en iPhone con la app instalada, mejor el código)."
   );
 }
 
