@@ -33,6 +33,14 @@ describe("destinos seguros (sin redirecciones a otros sitios)", () => {
     expect(destinoSeguro("/explorar?tipo=skill")).toBe("/explorar?tipo=skill");
   });
 
+  it("nunca devuelve un destino que empiece con // o /\ (redirección abierta tras normalizar)", () => {
+    for (const malo of ["/.//evil.com", "/a/../..//evil.com", "/a/..//evil.com", "/./\evil.com", "/%2e//evil.com"]) {
+      const salida = destinoSeguro(malo);
+      expect(salida.startsWith("//"), `${malo} -> ${salida}`).toBe(false);
+      expect(salida.startsWith("/\\"), `${malo} -> ${salida}`).toBe(false);
+    }
+  });
+
   it("descarta lo externo, lo raro y las rutas de acceso", () => {
     for (const malo of ["https://otro.com", "//otro.com", "/\\otro.com", "/\t/otro.com", "perfil", "", null, 3, "/entrar", "/auth/confirm"]) {
       expect(destinoSeguro(malo), String(malo)).toBe("/");

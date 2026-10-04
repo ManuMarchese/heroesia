@@ -35,7 +35,10 @@ export function destinoSeguro(destino: unknown, porDefecto = "/"): string {
   try {
     const url = new URL(destino, BASE_FICTICIA);
     if (url.origin !== BASE_FICTICIA || esRutaDeAcceso(url.pathname)) return porDefecto;
-    return `${url.pathname}${url.search}${url.hash}`;
+    const salida = `${url.pathname}${url.search}${url.hash}`;
+    // Tras normalizar ("/.//x", "/a/..//x") puede quedar "//x": el navegador lo toma como otro sitio.
+    if (salida.startsWith("//") || salida.startsWith("/\\")) return porDefecto;
+    return salida;
   } catch {
     return porDefecto;
   }
