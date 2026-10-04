@@ -159,12 +159,23 @@ describe("link de invitación: unirme(clave) (0004)", () => {
   });
 });
 
+describe("invitacion_valida (0005): sí o no, también sin sesión", () => {
+  it("responde true solo con la clave del link y no deja leer la tabla de claves", async () => {
+    const hash = "encode(sha256(convert_to('otra-clave', 'UTF8')), 'hex')";
+    await db.exec(`delete from public.invitacion; insert into public.invitacion (clave_hash) values (${hash})`);
+    expect((await como(db, null, "select public.invitacion_valida('otra-clave') as ok")).rows).toEqual([{ ok: true }]);
+    expect((await como(db, null, "select public.invitacion_valida('mala') as ok")).rows).toEqual([{ ok: false }]);
+    expect((await como(db, null, "select public.invitacion_valida(null) as ok")).rows).toEqual([{ ok: false }]);
+    await expect(como(db, null, "select * from public.invitacion")).rejects.toThrow(/permission denied/);
+  });
+});
+
 describe("funciones", () => {
   it("las de security definer son los triggers, es_heroe y sumar_heroe, y fijan search_path", async () => {
     const r = await db.query<{ proname: string; proconfig: string[] | null }>(
       "select proname, proconfig from pg_proc where pronamespace = 'public'::regnamespace and prosecdef order by proname",
     );
-    expect(r.rows.map((f) => f.proname)).toEqual(["es_heroe", "sumar_heroe", "unirme", "xp_por_accion", "xp_por_aporte", "xp_por_feedback_util"]);
+    expect(r.rows.map((f) => f.proname)).toEqual(["es_heroe", "invitacion_valida", "sumar_heroe", "unirme", "xp_por_accion", "xp_por_aporte", "xp_por_feedback_util"]);
     for (const f of r.rows) expect(f.proconfig).toEqual(['search_path=""']);
   });
 

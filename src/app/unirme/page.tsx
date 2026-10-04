@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { mensajeConocido } from "@/auth/mensajes";
 import { tienePerfil } from "@/auth/perfil";
 import { requireUser } from "@/auth/sesion";
 import { unirseAlGrupo } from "@/auth/union";
@@ -20,7 +21,7 @@ export default async function PaginaUnirme({ searchParams }: { searchParams: Par
   if (await tienePerfil(cliente, usuario.id)) redirect("/");
 
   const parametros = await searchParams;
-  let error = primero(parametros.error) ?? null;
+  let error = mensajeConocido(primero(parametros.error));
   const invitacion = primero(parametros.i);
   if (invitacion && !error) {
     // El link de invitación trae la clave: entra sin pedir nada.

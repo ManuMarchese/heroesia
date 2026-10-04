@@ -265,3 +265,10 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Por qué:** es lo más fácil que da una seguridad mínima. Con registros abiertos cualquiera puede crear un usuario vacío en Auth, pero sin la clave no ve datos. El mail a los amigos sigue necesitando SMTP propio (Supabase por defecto solo manda a miembros de la organización; fuente: docs de Supabase leídas hoy).
 - **Evidencia:** 399 tests (PGlite: clave buena, mala, bloqueo, idempotencia). NO VERIFICADO contra el Supabase real hasta aplicar 0004.
 
+## D42 · Login con usuario y clave, sin mails (2026-10-04)
+- **Qué:** Manu pidió que los amigos entren solo con el link, sin que él cargue mails ni configure un SMTP. Se probó en su proyecto que `signUp` con clave devuelve sesión sin mandar mail (confirmación de email apagada; usuario de prueba creado y borrado). El link `/entrar?invitacion=CLAVE` muestra "Crear mi cuenta": usuario + clave, y el "email" de Auth es `usuario@heroes-app.test` (inventado, nunca recibe nada). Antes de crear la cuenta se valida la clave con `invitacion_valida` (0005) y después `unirme` crea el perfil (0004). El ingreso posterior es usuario + clave; el email queda como opción para Manu. No se usa la service role.
+- **Quién:** Manu; orquestador.
+- **Por qué:** es lo más fácil que da seguridad mínima y no depende de SMTP. La service role no se carga en Vercel: en un proyecto compartido daría acceso a los datos de todas las otras apps.
+- **Costos y límites (a la vista de Manu):** (1) no hay recuperación de clave por mail: quien la olvida, pide que Manu se la cambie por SQL; (2) cada alta ejecuta el trigger de otra app del proyecto (`oh_on_auth_user_created` crea una fila en `oh_profiles` con el email inventado); (3) la confirmación de email apagada es un ajuste del proyecto: si se enciende, el alta falla con un mensaje claro.
+- **Evidencia:** tests (405+) y prueba real de `signUp` contra el proyecto. NO VERIFICADO: el alta completa desde el navegador en producción.
+

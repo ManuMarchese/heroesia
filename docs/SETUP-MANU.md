@@ -11,7 +11,7 @@ Pasos para poner Heroes IA en marcha antes de invitar a tus amigos (D16, D18, D3
 
 ## 2. Aplicar la migración (una sola vez)
 1. Abrí el **SQL Editor** del proyecto (nombre **NO VERIFICADO**).
-2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo. Después, en ese orden, `0002_entrada_diaria.sql`, `0003_proyecto_compartido.sql` y `0004_invitacion.sql` (la misma carpeta).
+2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo. Después, en ese orden, `0002_entrada_diaria.sql`, `0003_proyecto_compartido.sql`, `0004_invitacion.sql` y `0005_invitacion_valida.sql` (la misma carpeta).
 3. Una sola vez cada una: si las corrés de nuevo dan error, porque las tablas y el índice ya existen.
 4. Por qué: la 0001 crea las tablas, las reglas de acceso (RLS) y el trigger que crea el perfil de cada persona invitada; la 0002 limita a una "entrada" (+5 XP) por persona y por día; la 0003 hace que solo los héroes lean los datos y que el perfil se cree al invitar (`select public.sumar_heroe('mail@ejemplo.com');` en el SQL Editor, después de invitar), no por cada usuario nuevo de Auth (D40: sirve si el proyecto de Supabase lo comparten otras apps).
 
@@ -90,5 +90,4 @@ Seguí `docs/CHECKLIST-MANUAL-v0.1.md` con otra persona (5 a 8 minutos).
 ## Link de invitación (D41)
 - Cargar o cambiar la clave (en el SQL Editor; poné una clave larga y al azar, el link la lleva adentro): `insert into public.invitacion (clave_hash) values (encode(sha256(convert_to('LA-CLAVE', 'UTF8')), 'hex')) on conflict (id) do update set clave_hash = excluded.clave_hash;`
 - El link para pasar por WhatsApp: `https://heroesia.vercel.app/entrar?invitacion=LA-CLAVE`. Si se filtra, cambiá la clave y el link viejo deja de servir (los que ya entraron siguen adentro).
-- Para que les llegue el mail a los amigos hace falta SMTP propio (Auth, SMTP Settings): el mail por defecto de Supabase solo le manda a miembros de la organización.
-
+- Los amigos NO necesitan mail ni SMTP: crean usuario y clave en el link (D42). Si alguien olvida su clave, se cambia con SQL: `update auth.users set encrypted_password = crypt('NUEVA-CLAVE', gen_salt('bf')) where email = 'usuario@heroes-app.test';`.
