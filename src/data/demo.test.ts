@@ -40,7 +40,7 @@ describe("datos de ejemplo", () => {
 
   it("cada estado nuevo arranca limpio", async () => {
     await repo().publicar({ ...(await repo().aportes())[0]!, titulo: "Nuevo" });
-    expect(crearEstadoDemo(AHORA).aportes).toHaveLength(10);
+    expect(crearEstadoDemo(AHORA).aportes).toHaveLength(11);
   });
 
   it("incluye una oportunidad vencida, para verla atenuada en Explorar", async () => {

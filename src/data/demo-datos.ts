@@ -109,6 +109,10 @@ export function crearEstadoDemo(ahora: Date): EstadoDemo {
     aporte("demo-a10", "demo-leo", "oportunidad", "Becas para un curso de agentes", "Cubren el curso completo", hace(10), {
       fechaLimite: diaLocal(new Date(ahora.getTime() - 2 * 24 * HORA)),
     }),
+    // Proyecto de otra persona sin tu feedback: la demostración puede "Dar feedback".
+    aporte("demo-a11", "demo-sofi", "proyecto", "Tutor de inglés con IA", "Practicás conversación con correcciones", hace(4), {
+      queMirar: "Si las correcciones se entienden.",
+    }),
   ];
 
   const accion = (id: string, aporteId: string, perfilId: string, tipo: Accion["tipo"], creadoEn: string, extra: Partial<Accion> = {}): Accion => ({

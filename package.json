@@ -11,7 +11,8 @@
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "humo": "next build && vitest run --config vitest.humo.config.mts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
@@ -27,6 +28,7 @@
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "16.3.8",
+    "playwright-core": "1.56.1",
     "typescript": "^5.9.3",
     "vitest": "^5.0.3"
   }
