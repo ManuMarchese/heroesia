@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { PGlite } from "@electric-sql/pglite";
 
-const MIGRACIONES = ["0001_init.sql", "0002_entrada_diaria.sql"].map((nombre) =>
+const MIGRACIONES = ["0001_init.sql", "0002_entrada_diaria.sql", "0003_proyecto_compartido.sql"].map((nombre) =>
   fileURLToPath(new URL(`../migrations/${nombre}`, import.meta.url)),
 );
 
@@ -60,7 +60,7 @@ export async function como<T = Record<string, unknown>>(
   }
 }
 
-/** Crea un usuario de Auth (el trigger crea su perfil) y, si se pide, fija su fecha de ingreso. */
+/** Crea un usuario de Auth y su perfil (public.sumar_heroe) y, si se pide, fija su fecha de ingreso. */
 export async function crearUsuario(
   db: PGlite,
   id: string,
@@ -69,6 +69,7 @@ export async function crearUsuario(
 ): Promise<void> {
   const meta = JSON.stringify(opciones.nombre ? { nombre: opciones.nombre } : {});
   await db.query("insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, $3::jsonb)", [id, email, meta]);
+  await db.query("select public.sumar_heroe($1)", [email]); // el perfil se crea al invitar (0003), no con un trigger
   if (opciones.creadoEn) {
     await db.query("update public.perfiles set created_at = $2 where id = $1", [id, opciones.creadoEn]);
   }

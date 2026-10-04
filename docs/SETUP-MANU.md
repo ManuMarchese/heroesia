@@ -11,9 +11,9 @@ Pasos para poner Heroes IA en marcha antes de invitar a tus amigos (D16, D18, D3
 
 ## 2. Aplicar la migración (una sola vez)
 1. Abrí el **SQL Editor** del proyecto (nombre **NO VERIFICADO**).
-2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo. Después, en ese orden, pegá y ejecutá `supabase/migrations/0002_entrada_diaria.sql`.
+2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo. Después, en ese orden, `0002_entrada_diaria.sql` y `0003_proyecto_compartido.sql` (la misma carpeta).
 3. Una sola vez cada una: si las corrés de nuevo dan error, porque las tablas y el índice ya existen.
-4. Por qué: la 0001 crea las tablas, las reglas de acceso (RLS) y el trigger que crea el perfil de cada persona invitada; la 0002 limita a una "entrada" (+5 XP) por persona y por día.
+4. Por qué: la 0001 crea las tablas, las reglas de acceso (RLS) y el trigger que crea el perfil de cada persona invitada; la 0002 limita a una "entrada" (+5 XP) por persona y por día; la 0003 hace que solo los héroes lean los datos y que el perfil se cree al invitar (`select public.sumar_heroe('mail@ejemplo.com');` en el SQL Editor, después de invitar), no por cada usuario nuevo de Auth (D40: sirve si el proyecto de Supabase lo comparten otras apps).
 
 ## 3. Apagar los registros públicos
 1. En la configuración de Auth, apagá **"Allow new users to sign up"** (nombre según la guía de Supabase leída en el repo oficial, Q8).
@@ -80,3 +80,9 @@ Si ponés un día que no es lunes, cuenta la semana de ese día. Los miembros no
 
 ## 10. Probar antes de pasarlo
 Seguí `docs/CHECKLIST-MANUAL-v0.1.md` con otra persona (5 a 8 minutos).
+
+## Proyecto compartido con otras apps (D40)
+- Si el proyecto de Supabase tiene otras apps: **no apagues "Allow new users to sign up"** (rompería el alta de las otras) y no cambies Site URL, SMTP ni las plantillas sin revisar qué rompen. Heroes IA nunca crea usuarios (`shouldCreateUser: false`) y sin perfil no se ve ningún dato (0003).
+- Solo sumá la URL de Heroes IA a **Redirect URLs** (agregar, no reemplazar).
+- La plantilla de mail es única por proyecto: para el código de 6 números tiene que incluir `{{ .Token }}`. Revisala sin borrar nada.
+- Para dar de alta a alguien: invitalo desde el panel y corré `select public.sumar_heroe('su@mail.com');`. El orden de alta es el orden de capitanes.

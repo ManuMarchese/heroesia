@@ -16,8 +16,8 @@ afterAll(async () => {
   await db.close();
 });
 
-describe("perfiles creados por trigger", () => {
-  it("cada usuario nuevo de Auth tiene perfil, con su nombre o la parte local del email", async () => {
+describe("perfiles creados al invitar (sumar_heroe)", () => {
+  it("cada héroe dado de alta tiene perfil, con su nombre o la parte local del email", async () => {
     const r = await db.query<{ id: string; nombre: string }>("select id, nombre from public.perfiles order by nombre");
     expect(r.rows).toEqual([
       { id: ANA, nombre: "Ana" },
@@ -112,12 +112,34 @@ describe("configuración mínima", () => {
   });
 });
 
+const OTRA_APP = "00000000-0000-4000-8000-0000000000f1";
+
+describe("proyecto compartido: un usuario de otra app no entra a Heroes IA (0003)", () => {
+  it("sin perfil no lee nada, ni puede llamar a sumar_heroe, y el registro en Auth no crea perfil", async () => {
+    await db.query("insert into auth.users (id, email) values ($1, 'otra@app.com')", [OTRA_APP]);
+    const perfiles = await db.query("select 1 from public.perfiles where id = $1", [OTRA_APP]);
+    expect(perfiles.rows).toEqual([]);
+    for (const tabla of TABLAS) {
+      expect((await como(db, OTRA_APP, `select * from public.${tabla}`)).rows, tabla).toEqual([]);
+    }
+    await expect(como(db, OTRA_APP, "select public.sumar_heroe('ana@example.com')")).rejects.toThrow(/permission denied/);
+    await expect(como(db, ANA, "select public.sumar_heroe('ana@example.com')")).rejects.toThrow(/permission denied/);
+    expect((await como(db, ANA, "select * from public.perfiles")).rows.length).toBeGreaterThan(0);
+  });
+
+  it("sumar_heroe falla si el email no existe y es idempotente", async () => {
+    await expect(db.query("select public.sumar_heroe('nadie@x.com')")).rejects.toThrow(/No hay un usuario/);
+    await db.query("select public.sumar_heroe('ana@example.com')");
+    expect((await db.query("select 1 from public.perfiles where id = $1", [ANA])).rows).toHaveLength(1);
+  });
+});
+
 describe("funciones", () => {
-  it("las de security definer son solo los triggers y fijan search_path", async () => {
+  it("las de security definer son los triggers, es_heroe y sumar_heroe, y fijan search_path", async () => {
     const r = await db.query<{ proname: string; proconfig: string[] | null }>(
       "select proname, proconfig from pg_proc where pronamespace = 'public'::regnamespace and prosecdef order by proname",
     );
-    expect(r.rows.map((f) => f.proname)).toEqual(["crear_perfil", "xp_por_accion", "xp_por_aporte", "xp_por_feedback_util"]);
+    expect(r.rows.map((f) => f.proname)).toEqual(["es_heroe", "sumar_heroe", "xp_por_accion", "xp_por_aporte", "xp_por_feedback_util"]);
     for (const f of r.rows) expect(f.proconfig).toEqual(['search_path=""']);
   });
 

@@ -252,3 +252,10 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Quién:** [Manu, 2026-10-04]: "no continues, en 3 oraciones decime que logramos y que falta. Ya tengo tokens en claude code desktop para cargar las variables de entorno que queden por cargar". Orquestador (verificación del árbol y del remoto).
 - **Qué falta, en orden:** (1) aplicar las correcciones de D38 con tests (se puede relanzar el Builder con la lista de D37 y D38 o hacerlas a mano); (2) segunda revisión del Guardián, con parada de D25 si rechaza otra vez; (3) los pasos de Manu de `docs/SETUP-MANU.md` y la prueba de `docs/CHECKLIST-MANUAL-v0.1.md`.
 - **Evidencia:** `git status` limpio y `git ls-remote origin` con la rama de trabajo en `9a698a0`.
+
+## D40 · Proyecto de Supabase compartido con otras apps (2026-10-04)
+- **Qué:** Manu pidió que el SQL se aplique en su proyecto "speedcuber…", que tiene 117 tablas, 4 usuarios y un trigger de otra app en `auth.users` (leído solo-lectura con la CLI, sin cambios). Se agrega `0003_proyecto_compartido.sql`: lectura solo para quien tiene perfil (`es_heroe()`), sin trigger de perfil en `auth.users` y alta con `sumar_heroe(email)` (solo rol postgres). No se apagan los registros públicos ni se tocan SMTP, Site URL ni plantillas (son de todo el proyecto).
+- **Quién:** Manu (proyecto compartido, "de forma cuidadosa"); orquestador (0003).
+- **Por qué:** con las políticas de 0001 cualquier usuario con sesión de otra app leía todo Heroes IA, y el trigger daba perfil a cualquiera que se registrara en otra app.
+- **Evidencia:** pruebas en PGlite (usuario de otra app: 0 filas en las 7 tablas, no llama a `sumar_heroe`). NO VERIFICADO contra el Supabase real.
+
