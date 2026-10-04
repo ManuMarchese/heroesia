@@ -1,57 +1,56 @@
-# STATE: v0.1 detenida por el límite de uso; faltan 3 correcciones del Guardián (2026-10-04)
+# STATE: v1.0 desplegada en producción; falta la prueba con login real y con amigos (2026-10-04)
 
-**Estado en una línea:** las dos pasadas del Builder están hechas, verificadas (D34, D36) y subidas (`9a698a0`), pero el Guardián rechazó `5ef6499` con 3 bloqueantes (D37: redirección abierta, mensaje del invitado sin aceptar, XP de "Entrar" que tarda una apertura). La pasada 3 que los corrige se cortó por el límite semanal de uso sin escribir nada (D39) y Manu pidió seguir desde Claude Desktop. Producción: no hay.
+**Estado en una línea:** Heroes IA v1.0 está **desplegada** en https://heroesia.vercel.app con las migraciones 0001 a 0007 aplicadas en el Supabase compartido de Manu; entran los amigos con un link de invitación (usuario y clave, sin mails), se puede editar, borrar y guardar favoritos, y existe la categoría Tecnología con Explorar en "Todos". **Nada se probó todavía con un login real en producción**, y el Guardián no hizo su segunda revisión.
 
 ## Si retomás esta sesión (leer en este orden)
-1. Este archivo. 2. `PLAN-v0.1.md`. 3. `docs/DECISIONES-v0.1.md` (D34 a D36 son lo último). 4. `docs/SETUP-MANU.md` y `docs/CHECKLIST-MANUAL-v0.1.md`. 5. `docs/INVESTIGACION-v0.1.md`. 6. `docs/diseno/TOKENS.md`. 7. `README.md` (cómo correr, probar y el humo).
-Preparación del clon: `git fetch origin main && git remote set-head origin main` (ya hecho en esta sesión).
+1. Este archivo. 2. `docs/PROYECTO.md` (resumen simple de todo). 3. `docs/DECISIONES-v0.1.md` (D40 a D45 son lo último). 4. `docs/SETUP-MANU.md` y `docs/CHECKLIST-MANUAL-v0.1.md`. 5. `docs/APRENDIZAJES.md`. 6. `README.md` (cómo correr y probar). El estado viejo (v0.1, antes del despliegue) está en `docs/archivo/STATE-2026-10-04-v0.1.md`.
+Preparación del clon: `git config core.longpaths true` (Windows) y `git fetch origin main && git remote set-head origin main`.
 
 ## Datos clave
-- Repo `ManuMarchese/heroesia` · producción: no hay · rama de trabajo `claude/heroes-ia-app-planning-tdopih` · `main` en `40ad754` (solo documentación, D26) · rama por defecto en GitHub: la de trabajo (D31) · PR: no hay
-- Código: Next.js 16.3.8 + React 19.3.0 + Supabase (`@supabase/supabase-js` 2.117.2, `@supabase/ssr` 0.12.7), TypeScript 5.9, Vitest, `playwright-core` para el humo. Último commit de código verificado: `dcba8f6`.
-- Capturas del estado actual: `docs/capturas/` (8 PNG, modo demostración).
-- Look elegido: A · Cómic (D15). Prototipo: https://claude.ai/artifact/Jt48RNP9nibJrKxnxWVTSD (privado, solo Manu); copia en `docs/diseno/`.
-- Hosting y base: cuentas de Manu en Vercel y Supabase (D17, sin ver). Manu las configura y despliega desde Claude Desktop antes de invitar (D16, D18, D32). Saldo: sin informar.
-- Entrada: link mágico o código de 6 dígitos; registros públicos apagados y Manu invita desde el panel de Supabase (D22, D32). Misión: capitán rotativo (D23, D35). Arranque: misión inicial (D24). Autonomía hasta el Guardián con paradas (D25).
-- Hoy es domingo 2026-10-04: para que la misión inicial no se pierda, Manu fija `lanzamiento_en` en el lunes 2026-10-05 (paso 8 de `SETUP-MANU.md`).
-- Rollback: no hay producción previa; el freno real es quitar `NEXT_PUBLIC_SUPABASE_*` y redesplegar (falla cerrado), pausar Supabase o borrar el proyecto de Vercel; con la base vacía, el SQL de vaciado de D38 (va a `SETUP-MANU.md`).
+- **Producción:** https://heroesia.vercel.app (Vercel, equipo `manumarchese123-5200s-projects`, proyecto `heroesia`). Se despliega **por CLI** desde el clon: `vercel deploy --prod --yes` (el proyecto no está conectado a Git). Variables en Production: solo `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. No hay `GITHUB_TOKEN`, ni `HEROES_DEMO`, ni clave secreta.
+- **Base y login:** Supabase proyecto "speedcuber…" (ref `xetojlrziahdcrjpojtr`), **compartido** con otras apps (117 tablas ajenas, 4 usuarios y el trigger `oh_on_auth_user_created`). CLI de Supabase con la sesión de Manu: `supabase db query --linked -f archivo.sql`.
+- **Repo:** `ManuMarchese/heroesia`, rama de trabajo `claude/heroes-ia-app-planning-tdopih` (también la de GitHub por defecto). `main` = solo documentación (`40ad754`). No hay PR.
+- **Código:** Next.js 16.3.8, React 19.3, Supabase JS/SSR, TypeScript 5.9, Vitest (442 tests) y `playwright-core` para el humo.
+- **Migraciones aplicadas (en orden):** 0001 init · 0002 entrada diaria · 0003 proyecto compartido (lectura solo de héroes, perfil con `sumar_heroe`) · 0004 invitación (`unirme`) · 0005 `invitacion_valida` · 0006 carpetas y favoritos · 0007 tipo Tecnología.
+- **Entrada:** Manu por email (opción plegada en `/entrar`; ya es héroe). Amigos por el link `/entrar?invitacion=CLAVE` → crean usuario y clave → `unirme` crea su perfil. La clave vive solo como hash en la tabla `invitacion`; **el link vigente lo tiene Manu** (no está en el repo). Cambiar la clave: SQL en `docs/SETUP-MANU.md`.
+- **Respaldos locales de la base** (fuera del repo, carpeta `respaldo/` junto al clon): antes de 0006 y de 0007. Se pierden si se borra la sesión.
+- **Rollback:** no hay producción previa a la v1.0. Freno real: quitar `NEXT_PUBLIC_SUPABASE_*` en Vercel y redesplegar (la app falla cerrada), o `vercel rollback`/promover un despliegue anterior. Con datos reales: nunca vaciar la base sin copia.
+- Look A · Cómic (D15). Fuentes y tokens en `src/styles/tokens.css`.
 
 ## Próximos pasos (con costo)
-1. **Aplicar las correcciones de D38** (sin hacer): redirección abierta, mensaje del invitado sin aceptar, XP de "Entrar" en la primera apertura, límite de 'entrar' en la base, Salir local, cabeceras básicas, guías y rollback; cada una con tests. La lista exacta está en D37 y D38: se puede relanzar el Builder con ella o hacerlas a mano. Costo: 0 créditos de hosting; sí uso de Claude.
-2. Segunda revisión del Guardián (agente nuevo, independiente) sobre el diff contra `main` → `VEREDICTO: APROBADO | RECHAZADO`. Si rechaza otra vez, parada de D25.
-3. Manu, desde Claude Desktop, sigue `docs/SETUP-MANU.md`: SMTP propio con dominio verificado, apagar registros públicos, aplicar el SQL, invitar amigos y cargar las variables en Vercel. La app exige solo `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (más `GITHUB_TOKEN`, opcional); nunca `HEROES_DEMO` ni la clave secreta. Prueba con `docs/CHECKLIST-MANUAL-v0.1.md`. Costo: lo decide Manu (D16).
-4. Cierre: STATE, DECISIONES, APRENDIZAJES y `verificar-traspaso.sh`.
-**Paradas de la autonomía (D25):** una decisión de Manu cambia, el Guardián rechaza dos veces, o hace falta gasto, merge o deploy.
+1. **Manu prueba con login real** (0 costo): entrar con su email, crear un usuario de prueba con el link de invitación en una ventana privada, publicar, editar, guardar en carpeta, borrar. Después se borra el usuario de prueba y su fila en `oh_profiles` (el trigger de la otra app la crea).
+2. **Checklist manual con otra persona** (`docs/CHECKLIST-MANUAL-v0.1.md`): hay que actualizarlo a la v1.0 (usuario y clave, favoritos, Tecnología).
+3. **Segunda revisión del Guardián** (agente independiente, sobre el diff contra `main`) **nunca se hizo** (D45). Si rechaza, se frena y se le pregunta a Manu (D25).
+4. Guías de D38 6a–6f: **parcialmente hechas** (SETUP ya incluye 0001–0007, proyecto compartido, link de invitación y cambio de clave). Faltan revisar el resto de pasos de SETUP/CHECKLIST contra la realidad (por ejemplo, ya no se usa mail ni SMTP para los amigos).
+5. `npm run humo` (recorrido en Chromium) **no se corrió** desde la v0.1: actualizarlo a Explorar con "Todos" y a Tecnología antes de correrlo.
 
 ## NO verificado (va a la prueba manual)
-- Nada se probó contra un Supabase real: migración aplicada, trigger sobre `auth.users`, permisos por columna vía PostgREST, `getClaims`, SMTP, plantillas de mail, invitaciones.
-- Mi interpretación de la respuesta de Manu en D32 ("Antes de darselo ya si ponemos supabase y vercel. Deja solo eso sin hacer").
-- Todo lo de `docs/INVESTIGACION-v0.1.md` marcado [WS] o [repo] es de segunda mano (páginas oficiales bloqueadas por la red del entorno).
-- Lectura de links en sitios reales (la red del entorno los bloquea); portapapeles e instalación en celulares reales; textos de los menús de iPhone y Android.
-- Cuentas y planes de Vercel y Supabase; que el uso encaje en Vercel Hobby (no comercial); que Vercel cargue `VERCEL_ENV=production` en las funciones.
-- Vercel Hobby puede no desplegar commits de un autor que no es el dueño ("Claude <noreply@anthropic.com>"): depende de cómo despliegue Manu (D29).
-- Contrastes calculados a mano; semana de lunes a domingo en hora de Buenos Aires (supuesto de D23).
+- El alta completa de un amigo y el login de Manu **en producción con sesión real** (no se pueden escribir contraseñas en un sitio real desde acá).
+- Que la confirmación de email del proyecto siga apagada: el alta con usuario y clave depende de eso (se probó con `signUp` una vez, el 2026-10-04).
+- Que la plantilla de mail y las URLs de Auth del proyecto sirvan para el login por email de Manu (la plantilla de Magic Link trae solo el link, sin código; no se cambió).
+- Textos y botones de la UI de Supabase y Vercel citados en SETUP-MANU (páginas oficiales no revalidadas).
+- Rendimiento con 15 personas y con más de 100 aportes (Explorar "Todos" muestra los 100 más nuevos).
+- Contrastes calculados a mano; instalación como app en celulares reales.
 
 ## Pendiente / fuera de esta versión
-- Fuera de la v0.1 (D3, D6, D9, D10, D13): búsqueda de texto, ranking público, poder real en el grupo, insignias, premios, avisos automáticos y ficha automática con IA.
-- A confirmar por Manu en el checklist: valores de XP, rangos y clases, y demás decisiones del Builder (D34, D36); reglas de la misión semanal (D23, D35); decisiones técnicas derivadas de D32.
-- Decidir en el cierre si se versiona un `CLAUDE.md` propio (`next dev` genera uno solo; el Builder lo borró).
-- Mejoras opcionales: "Me interesa" en oportunidades vencidas; cabeceras de seguridad en `next.config.ts`; migración llena (248 de 250 líneas): lo nuevo va en `0002`.
-- Deuda técnica: TypeScript 5.9 y ESLint 9 (npm marca ESLint 9 como sin soporte).
-- Opcional: habilitar en Network access del entorno los dominios de documentación (supabase.com, vercel.com, nextjs.org, docs.github.com, support.apple.com, support.google.com, web.dev, webkit.org) para revalidar con la fuente primaria.
-- Opcional: instalar las definiciones de agentes del framework en `.claude/agents/` del repo para sesiones futuras (Desktop).
+- Fuera de la v1.0 (D3, D6, D9, D10, D13): búsqueda de texto, ranking público, poder real en el grupo, insignias, premios, avisos automáticos, ficha automática con IA.
+- Un post en **varias carpetas** (decidido: una sola, D43). Compartir carpetas: no (privadas).
+- Recuperar la clave por mail: no existe; la cambia Manu por SQL.
+- Decidir si se versiona un `CLAUDE.md` propio (`next dev` genera `AGENTS.md` y `CLAUDE.md` solos: se borran antes de commitear).
+- Deuda técnica: TypeScript 5.9 y ESLint 9; las URLs de Redirect de Auth (agregar `https://heroesia.vercel.app/**`) si Manu quiere seguir entrando por email.
+- Línea `[PRUEBA MOD - borrar]` en el `CLAUDE.md` **global** de Manu (`~/.claude/CLAUDE.md`): no es de este repo; Manu decide si se borra.
 
 ## Vence (revisar en cada arranque)
 | Qué | Fecha | Qué hacer |
 |---|---|---|
-| Correcciones de D38 | Antes de invitar a los amigos | Aplicarlas, verificarlas en copia limpia y con el humo, y pedir la 2.ª revisión del Guardián |
-| `lanzamiento_en` = 2026-10-05 | Antes de invitar | Que Manu lo fije si lanza en fin de semana (SETUP-MANU, paso 8) |
+| `lanzamiento_en` = 2026-10-05 | Ya fijado en la base | La misión inicial rige hasta esa semana; el capitán rota desde la siguiente |
+| Prueba con login real | Antes de pasarle el link a los amigos | Seguir "Próximos pasos" 1 y 2 |
 
 ## Reglas que no se negocian
-Cero supuestos. Sin secretos por el chat (las claves de Supabase las carga Manu en Vercel). Código solo en la rama designada. Sin merge, deploy ni gasto sin el OK de Manu. No se toca Vercel ni Supabase desde esta sesión (D18).
+Cero supuestos (todo dato externo con fuente o NO VERIFICADO). Sin secretos por el chat ni en el repo; la clave secreta de Supabase nunca va a Vercel. No escribir contraseñas en sitios reales. Un solo despliegue por tanda de cambios, con copia limpia en verde antes. Backup de las tablas antes de un cambio de base con riesgo. Merge a `main`, gasto y cambios de ajustes compartidos de Supabase (Auth, SMTP, plantillas) los decide Manu.
 
 ## Perfil de Manu
-No técnico, escribe en español, speedcuber y ajedrecista: pasos simples, el porqué en una línea y analogías. Aprueba entre etapas, salvo la autonomía de D25. Prefiere respuestas al grano, con bullets y el siguiente paso marcado.
+No técnico, escribe en español, speedcuber y ajedrecista: pasos simples, con emojis, el porqué en una línea y el siguiente paso marcado. Quiere lo más fácil posible y no hacer pasos manuales; avisar apenas algo falle (límite de uso). Aprueba entre etapas.
 
 ## Efímero (se pierde al compactar)
-El scratchpad con las copias de los tres looks, los logs de las copias limpias y las copias `vista` y `vista2` de la app. Todo lo importante está en el repo.
+La carpeta `respaldo/` (copias de las tablas) y los servidores de prueba locales. El resto está en el repo.

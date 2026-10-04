@@ -277,3 +277,15 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Quién:** Manu eligió: solo el autor; se borra todo y el XP queda; carpetas propias; privados; una carpeta por aporte. Orquestador: implementación.
 - **Evidencia:** 437 tests (PGlite: privacidad, una carpeta por aporte, borrado en cascada y XP intacto) y prueba en navegador en modo demostración (publicar, guardar en carpeta nueva, Perfil, editar y borrar). NO VERIFICADO contra el Supabase real hasta aplicar 0006 y probar en producción.
 
+## D44 · Categoría Tecnología y Explorar con "Todos" (2026-10-04)
+- **Qué:** nuevo tipo de aporte **Tecnología**, que funciona como Skill (acción "Lo probé" con resultado, campo "cómo se usa" opcional, clase Curador). Explorar abre en **Todos** (todos los tipos mezclados, del más nuevo al más viejo, hasta 100) y muestra las opciones en este orden: Todos, Skill, Repo, Noticia, Oportunidad, Proyecto, Tecnología. Migración `0007_tecnologia.sql` (recrea los checks de tipo y de "cómo se usa", y la política de acciones).
+- **Quién:** Manu (pidió la categoría, el orden y el "Todos" por defecto; eligió "como Skill"); orquestador.
+- **Por qué:** es el cambio más chico que suma la categoría sin tocar las demás.
+- **Evidencia:** 442 tests; un test existente cazó un error mío en la primera versión de 0007 (un patrón de búsqueda demasiado amplio soltaba también el check de oportunidad) y se corrigió antes de aplicarla; los checks quedaron verificados en la base real (los de fuente, fecha límite y qué mirar siguen); prueba visual en modo demostración.
+
+## D45 · Cierre de la v1.0 y qué NO se hizo (2026-10-04)
+- **Qué:** se despliega y se cierra la v1.0 a pedido de Manu ("hacé el deploy y creá las tablas"), con 6 despliegues de producción hoy por CLI. Se hizo: correcciones 1 a 5 de D38 (redirección abierta, mensaje del invitado, +5 de "Entrar", una entrada por día, Salir local, cabeceras) con sus tests; D40 a D44. **No se hizo:** la segunda revisión del Guardián (D25), `npm run humo`, la prueba manual con login real en producción ni el checklist con otra persona, y las guías de D38 6a a 6f solo están parcialmente al día (SETUP incluye 0001 a 0007, proyecto compartido, link de invitación y cambio de clave).
+- **Quién:** Manu pidió desplegar sin esperar esas pasadas; orquestador lo registra.
+- **Por qué:** Manu quería lanzar y probar. El riesgo asumido: lo no verificado de `STATE.md`, sección "NO verificado".
+- **Evidencia:** `verificar-copia-limpia.sh` en PASS antes de cada despliegue; `STATE.md` y `docs/PROYECTO.md` actualizados.
+

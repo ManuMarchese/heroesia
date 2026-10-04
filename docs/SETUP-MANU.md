@@ -11,7 +11,7 @@ Pasos para poner Heroes IA en marcha antes de invitar a tus amigos (D16, D18, D3
 
 ## 2. Aplicar la migración (una sola vez)
 1. Abrí el **SQL Editor** del proyecto (nombre **NO VERIFICADO**).
-2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo. Después, en ese orden, `0002_entrada_diaria.sql`, `0003_proyecto_compartido.sql`, `0004_invitacion.sql`, `0005_invitacion_valida.sql` y `0006_favoritos.sql` (la misma carpeta).
+2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo. Después, en ese orden, `0002_entrada_diaria.sql`, `0003_proyecto_compartido.sql`, `0004_invitacion.sql`, `0005_invitacion_valida.sql`, `0006_favoritos.sql` y `0007_tecnologia.sql` (la misma carpeta).
 3. Una sola vez cada una: si las corrés de nuevo dan error, porque las tablas y el índice ya existen.
 4. Por qué: la 0001 crea las tablas, las reglas de acceso (RLS) y el trigger que crea el perfil de cada persona invitada; la 0002 limita a una "entrada" (+5 XP) por persona y por día; la 0003 hace que solo los héroes lean los datos y que el perfil se cree al invitar (`select public.sumar_heroe('mail@ejemplo.com');` en el SQL Editor, después de invitar), no por cada usuario nuevo de Auth (D40: sirve si el proyecto de Supabase lo comparten otras apps).
 

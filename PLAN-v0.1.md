@@ -1,5 +1,7 @@
 # PLAN v0.1: Heroes IA, la red privada de amigos para aprender IA de élite
 
+> **Aviso (2026-10-04):** este plan es el original de la v0.1. El estado actual está en `STATE.md` y `docs/PROYECTO.md`; las decisiones posteriores (D40 a D45) cambiaron la entrada (link de invitación, usuario y clave) y sumaron editar, borrar, favoritos y Tecnología.
+
 > **APROBADO por Manu el 2026-10-03 (tamaño M, D21)** · Rama: `claude/heroes-ia-app-planning-tdopih` · Base: repo vacío (no existe `main`)
 > Datos externos: `docs/REFERENCIAS-DOC.md` (se crea con el Investigador). Regla: **ningún supuesto**. Todo dato sale del repo, de ese archivo o de una fuente citada; si no, dice "NO VERIFICADO".
 
