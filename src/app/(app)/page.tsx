@@ -1,6 +1,8 @@
+import { requireUser } from "@/auth/sesion";
 import { Marca } from "@/components/Marca";
 
-export default function PaginaInicio() {
+export default async function PaginaInicio() {
+  await requireUser();
   return (
     <>
       <Marca />

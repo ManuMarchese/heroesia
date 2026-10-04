@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { requireUser } from "@/auth/sesion";
 
 export const metadata: Metadata = { title: "Publicar" };
 
-export default function PaginaPublicar() {
+export default async function PaginaPublicar() {
+  await requireUser();
   return (
     <>
       <h1 className="titulo-seccion">Publicar</h1>

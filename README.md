@@ -29,6 +29,7 @@ Copiá `.env.example` a `.env.local` y completá los valores. `.env.local` nunca
 - `src/styles/tokens.css`: todos los valores del look A · Cómic como variables CSS.
 - `src/domain/`: reglas puras (aportes, XP, niveles, misión semanal, récord y resumen). Los números de XP están en `src/domain/xp-config.ts`.
 - `src/data/`: acceso a datos con una interfaz y dos implementaciones (Supabase y demostración).
+- `src/auth/`, `src/app/entrar/`, `src/app/auth/confirm/` y `src/proxy.ts`: entrada con link mágico o código de 6 dígitos (Supabase Auth, sin registros públicos). Es un módulo aparte, fácil de quitar.
 - `supabase/migrations/0001_init.sql`: tablas, índices y reglas de acceso (RLS). Se aplica a mano en el SQL Editor de Supabase.
 - `supabase/pruebas/`: tests de la migración sobre Postgres en memoria (PGlite); no tocan ningún Supabase real.
 - `public/icons/`: íconos de la app, exportados de `public/icons/icon.svg`.

@@ -108,6 +108,15 @@ textarea {
   background: var(--amarillo);
 }
 
+.aviso-demo {
+  padding: 8px 12px;
+  background: var(--amarillo);
+  border: var(--borde);
+  border-radius: 12px;
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+}
+
 .solo-lectores {
   position: absolute;
   width: 1px;

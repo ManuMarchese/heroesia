@@ -1,0 +1,48 @@
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.etiqueta {
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+}
+
+.campo {
+  min-height: var(--alto-boton);
+  padding: 0 14px;
+  background: var(--blanco);
+  border: var(--borde);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: var(--peso-negrita);
+}
+
+.codigo {
+  font-size: 22px;
+  letter-spacing: 6px;
+  text-align: center;
+}
+
+.aviso {
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-negrita);
+  line-height: 1.4;
+}
+
+.error {
+  padding: 8px 12px;
+  background: var(--rojo);
+  color: var(--blanco);
+  border: var(--borde);
+  border-radius: 12px;
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+}
+
+.secundarias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
