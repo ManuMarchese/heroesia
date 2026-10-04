@@ -175,3 +175,20 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Qué:** el registro de npm responde desde la sesión en la nube: `npm view next version` devolvió 16.3.8 y `npm view @supabase/supabase-js version` devolvió 2.117.2 (2026-10-03, 23:59 UTC). Node v22.22.0 y npm 10.9.4. Cierra el "NO VERIFICADO" del PLAN sobre `npm`.
 - **Quién:** orquestador.
 - **Evidencia:** salida de los comandos citados. No prueba que `npm ci` ni el build funcionen: eso lo verifica el Builder en copia limpia.
+
+## Etapa 2: resultado del Investigador (2026-10-04)
+
+### D29. Reporte del Investigador verificado y guardado
+- **Qué:** el reporte quedó en `docs/INVESTIGACION-v0.1.md`. Verificado por el orquestador: `git status` limpio tras el agente (no escribió nada); las versiones y fechas de npm (next 16.3.8, supabase-js 2.117.2, @supabase/ssr 0.12.7, react 19.3.0) coinciden con lo que consulté yo; los commits del repo salen con autor "Claude <noreply@anthropic.com>".
+- **Quién:** orquestador.
+- **Evidencia / límite:** el proxy del entorno bloqueó WebFetch en las páginas oficiales de documentación (supabase.com, vercel.com, nextjs.org y otras). Todo lo marcado [WS] o [repo] es de segunda mano: ninguna página oficial de docs se abrió. Q1 lo corroboré con una búsqueda propia (también de segunda mano).
+
+### D30. Parada de la autonomía por Q1 (condición 1 de D25)
+- **Qué:** Q1 cambia una decisión de Manu: con el email por defecto de Supabase, el link mágico (D22) solo le llega a miembros de su organización y con un tope de 2 por hora, así que los amigos no lo recibirían. Para que llegue a terceros hace falta SMTP propio, que según el Investigador exige un dominio verificado (gasto y pasos de Manu, D16). Se detiene el avance al Builder y se consulta a Manu.
+- **Quién:** orquestador, por la regla de D25.
+- **Alternativa (propuesta del orquestador):** email + clave + código de invitación, con las cuentas creadas desde el servidor (`admin.createUser` con `email_confirm: true`) y los registros públicos apagados. **NO VERIFICADO** con un Supabase real: va al checklist de Manu.
+
+### D31. Corrección sobre la rama por defecto (aclara D26)
+- **Qué:** tras el push de `33c18c3`, `git ls-remote origin` mostró `HEAD` en `33c18c3` (igual que la rama de trabajo) y `main` en `40ad754`. Entonces la rama por defecto en GitHub es la de trabajo, no `main`. Corrige la nota "NO VERIFICADO" de D26, que queda como historial.
+- **Quién:** orquestador.
+- **Evidencia:** salida de `git ls-remote origin` del 2026-10-04.
