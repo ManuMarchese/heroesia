@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { EventoXp, MotivoXp, TipoAporte } from "./tipos";
-import { asignarXp, calcularNivel, claseDe, motivoDeAccion, xpDe, xpParaLlegarA, xpPorClase } from "./xp";
+import { asignarXp, calcularNivel, claseDe, motivoDeAccion, xpDe, xpParaLlegarA, xpPorAporte, xpPorClase } from "./xp";
 import { XP_POR_MOTIVO } from "./xp-config";
 
 let secuencia = 0;
@@ -71,6 +71,21 @@ describe("valores y topes diarios", () => {
     expect(xpDe(eventos, "ana")).toBe(35);
     expect(xpDe(eventos, "ana", new Date(hora(5)))).toBe(5);
     expect(xpDe(eventos, "nadie")).toBe(0);
+  });
+});
+
+describe("XP ganado por aporte", () => {
+  it("suma lo que la persona ganó con ese aporte, después de los topes", () => {
+    const conAporte = (e: EventoXp, aporteId: string): EventoXp => ({ ...e, aporteId });
+    const eventos = asignarXp([
+      ...Array.from({ length: 5 }, (_, i) => conAporte(ev("ana", "probar", hora(i), "skill"), `a${i}`)),
+      conAporte(ev("ana", "probar", hora(9), "skill"), "a9"), // sexta del día: 0 XP
+      conAporte(ev("beto", "probar", hora(1), "skill"), "a0"),
+      ev("ana", "entrar", hora(0)),
+    ]);
+    expect(xpPorAporte(eventos, "ana", "a0")).toBe(30);
+    expect(xpPorAporte(eventos, "ana", "a9")).toBe(0);
+    expect(xpPorAporte(eventos, "beto", "a1")).toBe(0);
   });
 });
 

@@ -2,6 +2,7 @@
 // Aplica las mismas reglas que la migración (permisos, acciones por tipo, eventos de XP, capitán).
 import { validarAccion, validarMarcaUtil } from "@/domain/aportes";
 import { capitanDeSemana, ordenDeIngreso } from "@/domain/mision";
+import { validarNombre } from "@/domain/perfil";
 import { aFecha, semanaDe } from "@/domain/tiempo";
 import { ACCIONES_MISION, type Accion, type Aporte, type EventoXp } from "@/domain/tipos";
 import { META_MISION } from "@/domain/xp-config";
@@ -75,7 +76,14 @@ export function crearRepositorioDemo(
     async eventosXp() {
       return [...estado.eventos]
         .sort((a, b) => momento(a.creadoEn) - momento(b.creadoEn))
-        .map(({ id, perfilId, motivo, tipoAporte, creadoEn }): EventoXp => ({ id, perfilId, motivo, tipoAporte, creadoEn }));
+        .map(({ id, perfilId, motivo, tipoAporte, aporteId, creadoEn }): EventoXp => ({
+          id,
+          perfilId,
+          motivo,
+          tipoAporte,
+          aporteId,
+          creadoEn,
+        }));
     },
 
     async misionDefinida(semana) {
@@ -120,6 +128,14 @@ export function crearRepositorioDemo(
       if (!validacion.ok) throw new ErrorDatos(accion.util ? "duplicado" : "no_permitido", primerError(validacion.errores));
       accion.util = true;
       eventosPorUtil(estado, accion, reloj().toISOString());
+    },
+
+    async cambiarNombre(nombre) {
+      const yo = estado.miembros.find((m) => m.id === usuarioId);
+      if (!yo) throw new ErrorDatos("no_permitido");
+      const valido = validarNombre(nombre);
+      if (!valido.ok) throw new ErrorDatos("invalido", primerError(valido.errores));
+      yo.nombre = valido.valor;
     },
 
     async definirMision(semana, { accion, meta }) {

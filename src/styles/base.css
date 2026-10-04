@@ -108,6 +108,12 @@ textarea {
   background: var(--amarillo);
 }
 
+.boton:disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
 .aviso-demo {
   padding: 8px 12px;
   background: var(--amarillo);

@@ -1,73 +1,21 @@
 // Implementación con Supabase. Corre en el servidor con la sesión del usuario: la RLS decide qué puede hacer.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AccionValida, AporteValido } from "@/domain/aportes";
-import type { Accion, Aporte, EventoXp, Miembro, MisionDefinida } from "@/domain/tipos";
+import type { Miembro, MisionDefinida } from "@/domain/tipos";
 import { faltaEntradaHoy, TOPE_ENTRADAS } from "./entrada";
 import { ErrorDatos, traducirErrorPostgres } from "./errores";
 import { LIMITE_APORTES, type FiltroAcciones, type FiltroAportes, type Repositorio } from "./repositorio";
-
-export interface FilaAporte {
-  id: string;
-  autor_id: string;
-  tipo: Aporte["tipo"];
-  link: string;
-  titulo: string;
-  imagen_url: string | null;
-  por_que_sirve: string;
-  como_se_usa: string | null;
-  fuente: string | null;
-  fecha_limite: string | null;
-  que_mirar: string | null;
-  created_at: string;
-}
-
-export interface FilaAccion {
-  id: string;
-  aporte_id: string;
-  perfil_id: string;
-  tipo: Accion["tipo"];
-  resultado: string | null;
-  texto: string | null;
-  created_at: string;
-}
-
-export const aporteDesdeFila = (f: FilaAporte): Aporte => ({
-  id: f.id,
-  autorId: f.autor_id,
-  tipo: f.tipo,
-  link: f.link,
-  titulo: f.titulo,
-  imagenUrl: f.imagen_url,
-  porQueSirve: f.por_que_sirve,
-  comoSeUsa: f.como_se_usa,
-  fuente: f.fuente,
-  fechaLimite: f.fecha_limite,
-  queMirar: f.que_mirar,
-  creadoEn: f.created_at,
-});
-
-export const accionDesdeFila = (f: FilaAccion, util: boolean): Accion => ({
-  id: f.id,
-  aporteId: f.aporte_id,
-  perfilId: f.perfil_id,
-  tipo: f.tipo,
-  resultado: f.resultado,
-  texto: f.texto,
-  util,
-  creadoEn: f.created_at,
-});
-
-type Respuesta<T> = { data: T | null; error: { code?: string; message?: string } | null };
-
-function datos<T>({ data, error }: Respuesta<T>): T {
-  if (error) throw traducirErrorPostgres(error);
-  if (data === null) throw new ErrorDatos("no_encontrado");
-  return data;
-}
-
-function sinError({ error }: { error: { code?: string; message?: string } | null }): void {
-  if (error) throw traducirErrorPostgres(error);
-}
+import {
+  accionDesdeFila,
+  aporteDesdeFila,
+  datos,
+  eventoDesdeFila,
+  sinError,
+  todasLasFilas,
+  type FilaAccion,
+  type FilaAporte,
+  type FilaEvento,
+} from "./supabase-filas";
 
 export function crearRepositorioSupabase(
   cliente: SupabaseClient,
@@ -127,19 +75,16 @@ export function crearRepositorioSupabase(
     },
 
     async eventosXp() {
-      const filas = datos(
-        await cliente
+      const filas = await todasLasFilas((desde, hasta) =>
+        cliente
           .from("eventos_xp")
-          .select("id, perfil_id, motivo, tipo_aporte, created_at")
+          .select("id, perfil_id, motivo, tipo_aporte, aporte_id, created_at", { count: "exact" })
           .order("created_at")
-          .overrideTypes<
-            { id: string; perfil_id: string; motivo: EventoXp["motivo"]; tipo_aporte: EventoXp["tipoAporte"]; created_at: string }[],
-            { merge: false }
-          >(),
+          .order("id")
+          .range(desde, hasta)
+          .overrideTypes<FilaEvento[], { merge: false }>(),
       );
-      return filas.map(
-        (f): EventoXp => ({ id: f.id, perfilId: f.perfil_id, motivo: f.motivo, tipoAporte: f.tipo_aporte, creadoEn: f.created_at }),
-      );
+      return filas.map(eventoDesdeFila);
     },
 
     async misionDefinida(semana) {
@@ -190,6 +135,18 @@ export function crearRepositorioSupabase(
 
     async marcarUtil(accionId) {
       sinError(await cliente.from("feedback_util").insert({ accion_id: accionId }));
+    },
+
+    async cambiarNombre(nombre) {
+      const filas = datos(
+        await cliente
+          .from("perfiles")
+          .update({ nombre })
+          .eq("id", usuarioId)
+          .select("id")
+          .overrideTypes<{ id: string }[], { merge: false }>(),
+      );
+      if (filas.length !== 1) throw new ErrorDatos("no_permitido");
     },
 
     async definirMision(semana, { accion, meta }) {

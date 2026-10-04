@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { validarAporte } from "@/domain/aportes";
+import { estaVencida, validarAporte } from "@/domain/aportes";
 import { capitanDeSemana } from "@/domain/mision";
 import { semanaDe } from "@/domain/tiempo";
 import { asignarXp, calcularNivel, xpDe } from "@/domain/xp";
@@ -27,8 +27,9 @@ describe("datos de ejemplo", () => {
   it("tienen 5 miembros, incluido el usuario de ejemplo, y respetan las plantillas", async () => {
     const miembros = await repo().miembros();
     expect(miembros.map((m) => m.nombre)).toEqual(["Ana", "Héroe demo", "Leo", "Sofi", "Tomi"]);
+    // Cada aporte era válido cuando se publicó (después, una oportunidad puede vencer).
     for (const a of await repo().aportes()) {
-      expect(validarAporte({ ...a, tipo: a.tipo }, AHORA).ok, a.titulo).toBe(true);
+      expect(validarAporte({ ...a, tipo: a.tipo }, new Date(a.creadoEn)).ok, a.titulo).toBe(true);
     }
   });
 
@@ -39,7 +40,19 @@ describe("datos de ejemplo", () => {
 
   it("cada estado nuevo arranca limpio", async () => {
     await repo().publicar({ ...(await repo().aportes())[0]!, titulo: "Nuevo" });
-    expect(crearEstadoDemo(AHORA).aportes).toHaveLength(9);
+    expect(crearEstadoDemo(AHORA).aportes).toHaveLength(10);
+  });
+
+  it("incluye una oportunidad vencida, para verla atenuada en Explorar", async () => {
+    const vencidas = (await repo().aportes({ tipo: "oportunidad" })).filter((a) => estaVencida(a.fechaLimite ?? "", AHORA));
+    expect(vencidas).toHaveLength(1);
+  });
+
+  it("cada uno cambia solo su nombre, con las mismas reglas que la base", async () => {
+    expect(await codigo(repo().cambiarNombre("  Manu   M. "))).toBe("ok");
+    expect((await repo().miembros()).find((m) => m.id === VOS)?.nombre).toBe("Manu M.");
+    expect(await codigo(repo().cambiarNombre("   "))).toBe("invalido");
+    expect(await codigo(repo("alguien-de-afuera").cambiarNombre("Intruso"))).toBe("no_permitido");
   });
 });
 

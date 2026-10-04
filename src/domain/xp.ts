@@ -53,6 +53,13 @@ export function xpDe(eventos: readonly EventoConXp[], perfilId: string, hasta?: 
     .reduce((suma, e) => suma + e.xp, 0);
 }
 
+/** XP que ganó una persona por un aporte (por publicarlo, probarlo, leerlo o por su feedback útil). */
+export function xpPorAporte(eventos: readonly EventoConXp[], perfilId: string, aporteId: string): number {
+  return eventos
+    .filter((e) => e.perfilId === perfilId && e.aporteId === aporteId)
+    .reduce((suma, e) => suma + e.xp, 0);
+}
+
 /** XP acumulado necesario para llegar a un nivel. */
 export function xpParaLlegarA(nivel: number): number {
   return (XP_BASE_NIVEL * nivel * (nivel - 1)) / 2;

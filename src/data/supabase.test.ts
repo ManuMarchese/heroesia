@@ -1,9 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
 import { ErrorDatos, traducirErrorPostgres } from "./errores";
-import { crearRepositorioSupabase, type FilaAccion, type FilaAporte } from "./supabase";
+import { crearRepositorioSupabase } from "./supabase";
+import type { FilaAccion, FilaAporte } from "./supabase-filas";
 
-type Respuesta = { data: unknown; error: { code?: string; message?: string } | null };
+type Respuesta = { data: unknown; error: { code?: string; message?: string } | null; count?: number | null };
 
 /** Cliente falso: anota cada cadena de llamadas y responde, por tabla, en orden. Sin red. */
 function clienteFalso(respuestas: Record<string, Respuesta[]>) {
@@ -109,6 +110,49 @@ describe("repositorio de Supabase (con cliente falso)", () => {
     expect(await repo.lanzamientoEn()).toBe("2026-10-05");
     expect(await repo.lanzamientoEn()).toBeNull();
     expect(cadenas[0]).toBe('configuracion.select(["lanzamiento_en"]).maybeSingle([])');
+  });
+
+  it("lee todos los eventos de XP de a páginas, con el aporte de cada uno", async () => {
+    const evento = (i: number) => ({
+      id: `e${i}`,
+      perfil_id: "ana",
+      motivo: "publicar",
+      tipo_aporte: "skill",
+      aporte_id: `a${i}`,
+      created_at: "2026-10-04T12:00:00+00:00",
+    });
+    const { cliente, cadenas } = clienteFalso({
+      eventos_xp: [
+        { data: Array.from({ length: 1000 }, (_, i) => evento(i)), error: null, count: 1002 },
+        { data: [evento(1000), evento(1001)], error: null, count: 1002 },
+      ],
+    });
+    const eventos = await crearRepositorioSupabase(cliente, "ana").eventosXp();
+    expect(eventos).toHaveLength(1002);
+    expect(eventos[1001]).toEqual({
+      id: "e1001",
+      perfilId: "ana",
+      motivo: "publicar",
+      tipoAporte: "skill",
+      aporteId: "a1001",
+      creadoEn: "2026-10-04T12:00:00+00:00",
+    });
+    expect(cadenas[0]).toContain('select(["id, perfil_id, motivo, tipo_aporte, aporte_id, created_at",{"count":"exact"}])');
+    expect(cadenas[0]).toContain("range([0,999])");
+    expect(cadenas[1]).toContain("range([1000,1999])");
+  });
+
+  it("cambia solo el nombre propio; si la base no actualiza ninguna fila, no tiene permiso", async () => {
+    const { cliente, cadenas } = clienteFalso({
+      perfiles: [
+        { data: [{ id: "ana" }], error: null },
+        { data: [], error: null },
+      ],
+    });
+    const repo = crearRepositorioSupabase(cliente, "ana");
+    await repo.cambiarNombre("Anita");
+    expect(cadenas[0]).toBe('perfiles.update([{"nombre":"Anita"}]).eq(["id","ana"]).select(["id"]).overrideTypes([])');
+    await expect(repo.cambiarNombre("Anita")).rejects.toMatchObject({ codigo: "no_permitido" });
   });
 
   it("aporte inexistente devuelve null", async () => {

@@ -28,6 +28,8 @@
   --tam-chip: 12px;
   --tam-boton: 14px;
   --tam-nav: 12px;
+  --tam-etiqueta: 11px; /* "NIVEL" y rango en la tarjeta de héroe (prototipo) */
+  --tam-texto: 15px; /* "por qué sirve" y textos de las tarjetas */
   --peso-semi: 600;
   --peso-negrita: 700;
   --peso-extra: 800;
@@ -51,6 +53,9 @@
   --tam-avatar: 34px;
   --solape-avatar: -8px;
   --sombra-texto: 2px 2px 0 var(--tinta);
+  --tam-circulo-nivel: 76px;
+  --radio-campo: 12px;
+  --separacion-chica: 8px;
 
   /* Navegación inferior */
   --alto-nav: 84px;

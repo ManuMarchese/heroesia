@@ -1,0 +1,34 @@
+/* Chip de tipo (TOKENS.md). Noticia y Proyecto no estaban en el prototipo: Noticia blanco, Proyecto rosa. */
+.chip {
+  display: inline-block;
+  padding: 0 8px;
+  border: var(--borde);
+  border-radius: var(--radio-chip);
+  font-size: var(--tam-chip);
+  font-weight: var(--peso-extra);
+  letter-spacing: var(--espaciado-chip);
+  line-height: var(--linea-chip);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.skill {
+  background: var(--menta);
+}
+
+.repo {
+  background: var(--azul-heroe);
+  color: var(--blanco);
+}
+
+.noticia {
+  background: var(--blanco);
+}
+
+.oportunidad {
+  background: var(--amarillo);
+}
+
+.proyecto {
+  background: var(--rosa);
+}

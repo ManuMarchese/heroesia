@@ -40,6 +40,8 @@ export interface Repositorio {
   publicar(aporte: AporteValido): Promise<Aporte>;
   accionar(aporteId: string, accion: AccionValida): Promise<Accion>;
   marcarUtil(accionId: string): Promise<void>;
+  /** Cambia el nombre que ve el grupo (ya validado con validarNombre). */
+  cambiarNombre(nombre: string): Promise<void>;
   definirMision(semana: Dia, definicion: { accion: AccionMision; meta: number }): Promise<void>;
   /** Registra la entrada del día (para el XP de "Entrar"), sin pasar el tope diario de la configuración. */
   registrarEntrada(): Promise<void>;

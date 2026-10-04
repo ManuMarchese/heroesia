@@ -1,0 +1,73 @@
+/* Piezas compartidas de las pantallas: encabezados, selector de tipo, estados vacíos y datos del perfil. */
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--separacion-chica);
+}
+
+.verTodo {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-boton);
+  color: var(--blanco);
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+  text-decoration: underline;
+}
+
+.subtitulo {
+  font-family: var(--fuente-display);
+  font-size: var(--tam-titulo-mision);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.texto {
+  font-size: var(--tam-texto);
+  line-height: 1.4;
+}
+
+.tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--separacion-chica);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tipo {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-boton);
+  padding: 0 14px;
+  background: var(--blanco);
+  border: var(--borde);
+  border-radius: var(--radio-pastilla);
+  box-shadow: var(--sombra-boton);
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+  text-decoration: none;
+}
+
+.tipo[aria-current="page"] {
+  background: var(--amarillo);
+  box-shadow: none;
+}
+
+.datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--separacion-chica) var(--separacion);
+  margin: 0;
+  font-size: var(--tam-texto);
+}
+
+.datos dt {
+  font-weight: var(--peso-extra);
+}
+
+.datos dd {
+  margin: 0;
+}

@@ -1,0 +1,123 @@
+.cabecera,
+.pie,
+.progreso {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--separacion-chica);
+}
+
+.pie {
+  flex-wrap: wrap;
+}
+
+.etiqueta {
+  padding: 0 8px;
+  background: var(--rosa);
+  border: var(--borde);
+  border-radius: var(--radio-chip);
+  font-size: var(--tam-chip);
+  font-weight: var(--peso-extra);
+  letter-spacing: var(--espaciado-chip);
+  line-height: var(--linea-chip);
+  text-transform: uppercase;
+}
+
+.faltan {
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+  color: var(--gris-texto);
+}
+
+.titulo {
+  font-family: var(--fuente-display);
+  font-size: var(--tam-titulo-mision);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.detalle {
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-negrita);
+  color: var(--gris-texto);
+  line-height: 1.4;
+}
+
+.segmentos {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.segmento {
+  flex: 1;
+  height: var(--alto-segmento);
+  background: var(--blanco);
+  border: var(--borde);
+  border-radius: var(--radio-segmento);
+}
+
+.lleno {
+  background: var(--menta);
+}
+
+.cuenta {
+  font-family: var(--fuente-display);
+  font-size: var(--tam-progreso-mision);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cumplida {
+  align-self: flex-start;
+  padding: 0 10px;
+  background: var(--menta);
+  border: var(--borde);
+  border-radius: var(--radio-pastilla);
+  font-size: var(--tam-chip);
+  font-weight: var(--peso-extra);
+  line-height: var(--linea-chip);
+}
+
+.avatares {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.avatar {
+  width: var(--tam-avatar);
+  height: var(--tam-avatar);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--borde);
+  border-radius: 50%;
+  background: var(--blanco);
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+}
+
+.avatar + .avatar {
+  margin-left: var(--solape-avatar);
+}
+
+.color0 {
+  background: var(--amarillo);
+}
+
+.color1 {
+  background: var(--rosa);
+}
+
+.color2 {
+  background: var(--menta);
+}
+
+.nadie {
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-negrita);
+  color: var(--gris-texto);
+}

@@ -60,6 +60,8 @@ export interface EventoXp {
   perfilId: string;
   motivo: MotivoXp;
   tipoAporte: TipoAporte | null;
+  /** El aporte que lo generó (null o ausente en "entrar"). Sirve para mostrar el XP ganado por aporte. */
+  aporteId?: string | null;
   creadoEn: FechaIso;
 }
 

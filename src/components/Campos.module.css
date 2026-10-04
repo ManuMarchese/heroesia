@@ -1,0 +1,60 @@
+/* Formularios de la app (Perfil, Publicar, acciones y misión). Mismos valores que /entrar. */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--separacion-chica);
+}
+
+.etiqueta {
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+}
+
+.campo {
+  width: 100%;
+  min-height: var(--alto-boton);
+  padding: 0 14px;
+  background: var(--blanco);
+  border: var(--borde);
+  border-radius: var(--radio-campo);
+  font-size: 16px;
+  font-weight: var(--peso-negrita);
+}
+
+textarea.campo {
+  min-height: 96px;
+  padding: 10px 14px;
+  resize: vertical;
+}
+
+.ayuda {
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-negrita);
+  color: var(--gris-texto);
+  line-height: 1.4;
+}
+
+.error {
+  padding: 8px 12px;
+  background: var(--rojo);
+  color: var(--blanco);
+  border: var(--borde);
+  border-radius: var(--radio-campo);
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+}
+
+.ok {
+  padding: 8px 12px;
+  background: var(--menta);
+  border: var(--borde);
+  border-radius: var(--radio-campo);
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+}
+
+.botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--separacion-chica);
+}
