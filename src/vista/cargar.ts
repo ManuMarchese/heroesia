@@ -64,15 +64,22 @@ export async function cargarBase(repo: Repositorio, ahora: Date, origen: string 
   };
 }
 
-/** Abrir Inicio registra la entrada del día (XP "Entrar", una vez por día local) y después carga. */
-export async function abrirInicio(repo: Repositorio, ahora: Date, origen: string | null = null): Promise<VistaBase> {
+/** Margen por desfase entre el reloj del servidor y el de la base, que pone la hora del evento. */
+const TOLERANCIA_RELOJES_MS = 60_000;
+
+/**
+ * Abrir Inicio registra la entrada del día (XP "Entrar", una vez por día local) y después carga.
+ * El instante `ahora` se toma DESPUÉS de registrar: xpDe() descarta lo posterior, y si no el +5 recién
+ * aparecería en la segunda apertura.
+ */
+export async function abrirInicio(repo: Repositorio, reloj: () => Date, origen: string | null = null): Promise<VistaBase> {
   try {
     await repo.registrarEntrada();
   } catch (error) {
     // Sin la entrada solo se pierden 5 XP: la pantalla igual tiene que abrir.
     console.error("No se pudo registrar la entrada del día", error);
   }
-  return cargarBase(repo, ahora, origen);
+  return cargarBase(repo, new Date(reloj().getTime() + TOLERANCIA_RELOJES_MS), origen);
 }
 
 export async function cargarExplorar(repo: Repositorio, tipo: TipoAporte, ahora: Date): Promise<TarjetaAporteVista[]> {

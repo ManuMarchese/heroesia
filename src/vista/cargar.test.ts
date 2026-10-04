@@ -15,14 +15,25 @@ beforeEach(() => {
 describe("Base del héroe", () => {
   it("abrir Inicio registra la entrada del día una sola vez", async () => {
     const entradasDeHoy = () => estado.eventos.filter((e) => e.perfilId === VOS && e.motivo === "entrar" && e.creadoEn === AHORA.toISOString());
-    await abrirInicio(repo(), AHORA);
-    await abrirInicio(repo(), AHORA);
+    await abrirInicio(repo(), () => AHORA);
+    await abrirInicio(repo(), () => AHORA);
     expect(entradasDeHoy()).toHaveLength(1);
+  });
+
+  it("el +5 de Entrar se ve en la primera apertura (el reloj se lee después de registrar) y no sube al recargar", async () => {
+    let lecturas = 0;
+    // La primera lectura es anterior al instante del evento; el repositorio guarda el evento en AHORA.
+    const reloj = () => new Date(AHORA.getTime() - (lecturas++ === 0 ? 5_000 : 0));
+    const sinEntrar = (await cargarBase(repo(), AHORA)).heroe.xpTotal;
+    const primera = (await abrirInicio(repo(), reloj)).heroe.xpTotal;
+    const segunda = (await abrirInicio(repo(), () => AHORA)).heroe.xpTotal;
+    expect(primera).toBe(sinEntrar + 5);
+    expect(segunda).toBe(primera);
   });
 
   it("si registrar la entrada falla, la pantalla igual carga", async () => {
     const roto = { ...repo(), registrarEntrada: async () => Promise.reject(new Error("sin red")) };
-    await expect(abrirInicio(roto, AHORA)).resolves.toMatchObject({ heroe: { nombre: USUARIO_DEMO.nombre } });
+    await expect(abrirInicio(roto, () => AHORA)).resolves.toMatchObject({ heroe: { nombre: USUARIO_DEMO.nombre } });
   });
 
   it("muestra el héroe, la misión y lo nuevo, del más nuevo al más viejo", async () => {

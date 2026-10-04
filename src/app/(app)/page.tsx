@@ -16,7 +16,7 @@ import { abrirInicio } from "@/vista/cargar";
 /** Base del héroe (U1, D12): tu nivel y récord, la misión del equipo y lo nuevo. */
 export default async function PaginaInicio() {
   const usuario = await requireUser();
-  const base = await abrirInicio(await obtenerRepositorio(usuario.id), new Date(), origenDelPedido(await headers()));
+  const base = await abrirInicio(await obtenerRepositorio(usuario.id), () => new Date(), origenDelPedido(await headers()));
   return (
     <>
       <Marca />
