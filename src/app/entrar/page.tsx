@@ -14,7 +14,11 @@ const primero = (valor: string | string[] | undefined) => (Array.isArray(valor) 
 
 export default async function PaginaEntrar({ searchParams }: { searchParams: Parametros }) {
   const parametros = await searchParams;
-  const destino = destinoSeguro(primero(parametros.next));
+  // Link de invitación: /entrar?invitacion=CLAVE lleva, después de entrar, a /unirme con la clave.
+  const invitacion = primero(parametros.invitacion);
+  const destino = invitacion
+    ? `/unirme?i=${encodeURIComponent(invitacion.slice(0, 200))}`
+    : destinoSeguro(primero(parametros.next));
   if (modoDemo()) redirect(destino);
   const usuario = await obtenerUsuario();
   if (usuario) redirect(destino);
@@ -28,7 +32,7 @@ export default async function PaginaEntrar({ searchParams }: { searchParams: Par
       <section className="panel">
         {configurada ? (
           <>
-            <p>Entrás con tu email, sin clave: te mandamos un link y un código.</p>
+            <p>Entrás con tu email, sin clave: te mandamos un mail con un link (y un código, si lo trae).</p>
             <FormularioEntrar destino={destino} errorInicial={errorInicial} />
           </>
         ) : (

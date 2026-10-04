@@ -6,13 +6,13 @@ import { DESTINO_LINK_INVALIDO, confirmarDesdeLink, pedirCodigo, verificarCodigo
 const CONFIRMAR = "https://heroes.example.com/auth/confirm";
 
 describe("pedir el código", () => {
-  it("nunca crea usuarios: manda shouldCreateUser false y el link a /auth/confirm", async () => {
+  it("crea el usuario si no existe (D41): manda shouldCreateUser true y el link a /auth/confirm", async () => {
     const { cliente, llamadas } = clienteFalso();
     expect(await pedirCodigo(cliente, " Ana@Example.com ", CONFIRMAR)).toEqual({ ok: true, email: "ana@example.com" });
     expect(llamadas).toEqual([
       {
         metodo: "signInWithOtp",
-        argumentos: { email: "ana@example.com", options: { shouldCreateUser: false, emailRedirectTo: CONFIRMAR } },
+        argumentos: { email: "ana@example.com", options: { shouldCreateUser: true, emailRedirectTo: CONFIRMAR } },
       },
     ]);
   });

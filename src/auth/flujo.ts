@@ -1,5 +1,5 @@
 // Entrada con signInWithOtp (D22, D32): la persona abre el link del mail o escribe el código en la misma
-// pantalla (en iPhone el link abre Safari y no la app instalada). Nunca crea usuarios: los invita Manu.
+// pantalla (en iPhone el link abre Safari y no la app instalada). Crea el usuario si no existe (D41); sin perfil no ve nada hasta unirse con el link de invitación.
 import { MENSAJES_ACCESO, mensajeErrorEnvio, mensajeErrorVerificacion, type ErrorAuth } from "./errores";
 import { destinoSeguro, esCodigoValido, esEmailValido, normalizarCodigo, normalizarEmail } from "./validacion";
 
@@ -26,7 +26,7 @@ export async function pedirCodigo(
   if (!esEmailValido(email)) return { ok: false, email, error: MENSAJES_ACCESO.emailInvalido };
   const { error } = await cliente.signInWithOtp({
     email,
-    options: { shouldCreateUser: false, emailRedirectTo: urlConfirmacion },
+    options: { shouldCreateUser: true, emailRedirectTo: urlConfirmacion },
   });
   return error ? { ok: false, email, error: mensajeErrorEnvio(error) } : { ok: true, email };
 }

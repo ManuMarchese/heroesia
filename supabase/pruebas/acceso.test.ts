@@ -134,12 +134,37 @@ describe("proyecto compartido: un usuario de otra app no entra a Heroes IA (0003
   });
 });
 
+describe("link de invitación: unirme(clave) (0004)", () => {
+  const NUEVA = "00000000-0000-4000-8000-0000000000f2";
+  const hash = (clave: string) => `encode(sha256(convert_to('${clave}', 'UTF8')), 'hex')`;
+
+  it("la clave es correcta: crea el perfil; es idempotente; la app no lee la tabla de claves", async () => {
+    await db.query(`insert into public.invitacion (clave_hash) values (${hash("clave-buena")})`);
+    await db.query("insert into auth.users (id, email) values ($1, 'nueva.persona@app.com')", [NUEVA]);
+    expect((await como(db, NUEVA, "select public.unirme('clave-buena') as ok")).rows).toEqual([{ ok: true }]);
+    expect((await db.query("select nombre from public.perfiles where id = $1", [NUEVA])).rows).toEqual([{ nombre: "nueva.persona" }]);
+    expect((await como(db, NUEVA, "select public.unirme('lo-que-sea') as ok")).rows).toEqual([{ ok: true }]);
+    await expect(como(db, NUEVA, "select * from public.invitacion")).rejects.toThrow(/permission denied/);
+    await expect(como(db, null, "select public.unirme('clave-buena')")).rejects.toThrow(/permission denied/);
+  });
+
+  it("clave incorrecta: no crea perfil y a los 5 fallos en una hora bloquea hasta con la clave buena", async () => {
+    const OTRA = "00000000-0000-4000-8000-0000000000f3";
+    await db.query("insert into auth.users (id, email) values ($1, 'otra.persona@app.com')", [OTRA]);
+    for (let i = 0; i < 5; i++) {
+      expect((await como(db, OTRA, "select public.unirme('mala') as ok")).rows).toEqual([{ ok: false }]);
+    }
+    await expect(como(db, OTRA, "select public.unirme('clave-buena')")).rejects.toThrow(/demasiados_intentos/);
+    expect((await db.query("select 1 from public.perfiles where id = $1", [OTRA])).rows).toEqual([]);
+  });
+});
+
 describe("funciones", () => {
   it("las de security definer son los triggers, es_heroe y sumar_heroe, y fijan search_path", async () => {
     const r = await db.query<{ proname: string; proconfig: string[] | null }>(
       "select proname, proconfig from pg_proc where pronamespace = 'public'::regnamespace and prosecdef order by proname",
     );
-    expect(r.rows.map((f) => f.proname)).toEqual(["es_heroe", "sumar_heroe", "xp_por_accion", "xp_por_aporte", "xp_por_feedback_util"]);
+    expect(r.rows.map((f) => f.proname)).toEqual(["es_heroe", "sumar_heroe", "unirme", "xp_por_accion", "xp_por_aporte", "xp_por_feedback_util"]);
     for (const f of r.rows) expect(f.proconfig).toEqual(['search_path=""']);
   });
 

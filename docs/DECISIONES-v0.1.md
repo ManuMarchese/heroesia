@@ -259,3 +259,9 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Por qué:** con las políticas de 0001 cualquier usuario con sesión de otra app leía todo Heroes IA, y el trigger daba perfil a cualquiera que se registrara en otra app.
 - **Evidencia:** pruebas en PGlite (usuario de otra app: 0 filas en las 7 tablas, no llama a `sumar_heroe`). NO VERIFICADO contra el Supabase real.
 
+## D41 · Entrada por link de invitación (2026-10-04)
+- **Qué:** Manu pidió que sus amigos entren sin que él cargue mails. Se reabre D22 (solo invitación): ahora `signInWithOtp` crea el usuario (`shouldCreateUser: true`), pero sin perfil no se ve nada (0003). El link `/entrar?invitacion=CLAVE` lleva a `/unirme?i=CLAVE`, que llama a `public.unirme(clave)` (0004): si el hash coincide, crea el perfil. 5 intentos fallidos por hora y por persona. La clave vive solo como hash (tabla `invitacion`, sin permisos para la app) y se cambia con SQL (SETUP-MANU).
+- **Quién:** Manu; orquestador.
+- **Por qué:** es lo más fácil que da una seguridad mínima. Con registros abiertos cualquiera puede crear un usuario vacío en Auth, pero sin la clave no ve datos. El mail a los amigos sigue necesitando SMTP propio (Supabase por defecto solo manda a miembros de la organización; fuente: docs de Supabase leídas hoy).
+- **Evidencia:** 399 tests (PGlite: clave buena, mala, bloqueo, idempotencia). NO VERIFICADO contra el Supabase real hasta aplicar 0004.
+
