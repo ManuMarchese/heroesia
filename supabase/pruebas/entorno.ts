@@ -4,7 +4,9 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { PGlite } from "@electric-sql/pglite";
 
-const MIGRACION = fileURLToPath(new URL("../migrations/0001_init.sql", import.meta.url));
+const MIGRACIONES = ["0001_init.sql", "0002_entrada_diaria.sql"].map((nombre) =>
+  fileURLToPath(new URL(`../migrations/${nombre}`, import.meta.url)),
+);
 
 const PRELUDIO = `
   create role anon nologin;
@@ -37,7 +39,7 @@ export const CARO = "00000000-0000-4000-8000-00000000000c";
 export async function crearBase(): Promise<PGlite> {
   const db = new PGlite();
   await db.exec(PRELUDIO);
-  await db.exec(readFileSync(MIGRACION, "utf8"));
+  for (const archivo of MIGRACIONES) await db.exec(readFileSync(archivo, "utf8"));
   return db;
 }
 

@@ -11,9 +11,9 @@ Pasos para poner Heroes IA en marcha antes de invitar a tus amigos (D16, D18, D3
 
 ## 2. Aplicar la migración (una sola vez)
 1. Abrí el **SQL Editor** del proyecto (nombre **NO VERIFICADO**).
-2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo.
-3. Una sola vez: si lo corrés de nuevo da error, porque las tablas ya existen.
-4. Por qué: crea las tablas, las reglas de acceso (RLS) y el trigger que crea el perfil de cada persona invitada.
+2. Pegá todo el contenido de `supabase/migrations/0001_init.sql` y ejecutalo. Después, en ese orden, pegá y ejecutá `supabase/migrations/0002_entrada_diaria.sql`.
+3. Una sola vez cada una: si las corrés de nuevo dan error, porque las tablas y el índice ya existen.
+4. Por qué: la 0001 crea las tablas, las reglas de acceso (RLS) y el trigger que crea el perfil de cada persona invitada; la 0002 limita a una "entrada" (+5 XP) por persona y por día.
 
 ## 3. Apagar los registros públicos
 1. En la configuración de Auth, apagá **"Allow new users to sign up"** (nombre según la guía de Supabase leída en el repo oficial, Q8).

@@ -165,7 +165,9 @@ export function crearRepositorioSupabase(
           .overrideTypes<{ created_at: string }[], { merge: false }>(),
       );
       if (!faltaEntradaHoy(ultimas.map((e) => e.created_at), reloj())) return;
-      sinError(await cliente.from("eventos_xp").insert({ motivo: "entrar" }));
+      const { error } = await cliente.from("eventos_xp").insert({ motivo: "entrar" });
+      // 23505: otra pestaña ya registró la entrada de hoy (índice único de 0002): no es un fallo.
+      if (error && error.code !== "23505") sinError({ error });
     },
   };
 }

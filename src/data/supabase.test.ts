@@ -177,6 +177,19 @@ describe("repositorio de Supabase (con cliente falso)", () => {
   });
 });
 
+describe("entrada duplicada (carrera entre dos pestañas)", () => {
+  it("si la base rechaza la segunda entrada del día (23505), no falla", async () => {
+    const ahora = () => new Date("2026-10-05T15:00:00Z");
+    const { cliente } = clienteFalso({
+      eventos_xp: [
+        { data: [], error: null },
+        { data: null, error: { code: "23505" } },
+      ],
+    });
+    await expect(crearRepositorioSupabase(cliente, "ana", ahora).registrarEntrada()).resolves.toBeUndefined();
+  });
+});
+
 describe("traducción de errores de Postgres", () => {
   it.each([
     ["42501", "no_permitido"],

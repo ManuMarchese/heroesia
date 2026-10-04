@@ -149,4 +149,15 @@ describe("eventos de XP: los registra la base", () => {
     await expect(como(db, ANA, "delete from public.eventos_xp")).rejects.toThrow(/permission denied/);
     await expect(como(db, ANA, "update public.eventos_xp set motivo = 'probar'")).rejects.toThrow(/permission denied/);
   });
+
+  it("una sola entrada por persona y por día de Buenos Aires (0002)", async () => {
+    const entrar = (uid: string, cuando: string) =>
+      db.query("insert into public.eventos_xp (perfil_id, motivo, created_at) values ($1, 'entrar', $2)", [uid, cuando]);
+    await entrar(CARO, "2026-10-05T12:00:00Z"); // lunes 09:00 en Buenos Aires
+    await expect(entrar(CARO, "2026-10-05T20:00:00Z")).rejects.toThrow(/eventos_xp_entrar_por_dia/); // mismo día local
+    await entrar(BETO, "2026-10-05T12:00:00Z"); // otra persona, mismo día: se puede
+    // 02:00 UTC del martes sigue siendo lunes 23:00 en Buenos Aires: mismo día local, aunque cambie el día UTC.
+    await expect(entrar(CARO, "2026-10-06T02:00:00Z")).rejects.toThrow(/eventos_xp_entrar_por_dia/);
+    await entrar(CARO, "2026-10-06T03:00:00Z"); // martes 00:00 en Buenos Aires: día nuevo
+  });
 });
