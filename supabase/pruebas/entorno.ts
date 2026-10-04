@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { PGlite } from "@electric-sql/pglite";
 
-const MIGRACIONES = ["0001_init.sql", "0002_entrada_diaria.sql", "0003_proyecto_compartido.sql", "0004_invitacion.sql", "0005_invitacion_valida.sql"].map((nombre) =>
+const MIGRACIONES = ["0001_init.sql", "0002_entrada_diaria.sql", "0003_proyecto_compartido.sql", "0004_invitacion.sql", "0005_invitacion_valida.sql", "0006_favoritos.sql"].map((nombre) =>
   fileURLToPath(new URL(`../migrations/${nombre}`, import.meta.url)),
 );
 
