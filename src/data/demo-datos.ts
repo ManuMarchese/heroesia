@@ -1,6 +1,6 @@
 // Datos de ejemplo del modo demostración (HEROES_DEMO=1). Personas y aportes inventados.
 import { diaLocal, semanaDe, sumarDias } from "@/domain/tiempo";
-import type { Accion, Aporte, Dia, EventoXp, Miembro, MisionDefinida, TipoAporte } from "@/domain/tipos";
+import type { Accion, Aporte, Carpeta, Dia, EventoXp, Favorito, Miembro, MisionDefinida, TipoAporte } from "@/domain/tipos";
 import { motivoDeAccion } from "@/domain/xp";
 
 export const USUARIO_DEMO = { id: "demo-vos", email: "demo@heroes.invalid", nombre: "Héroe demo" } as const;
@@ -16,6 +16,9 @@ export interface EstadoDemo {
   acciones: Accion[];
   eventos: EventoDemo[];
   misiones: MisionDefinida[];
+  /** Carpetas y favoritos de todos; cada repositorio solo ve los de su usuario (como la RLS). */
+  carpetas: (Carpeta & { perfilId: string })[];
+  favoritos: (Favorito & { perfilId: string })[];
   secuencia: number;
 }
 
@@ -142,7 +145,7 @@ export function crearEstadoDemo(ahora: Date): EstadoDemo {
   // Lanzamiento fijado hace 2 semanas: esta semana el capitán es el usuario de ejemplo (2.º por orden
   // de ingreso), así la demostración muestra el formulario para definir la misión.
   const lanzamientoEn = sumarDias(semanaDe(ahora), -14);
-  const estado: EstadoDemo = { miembros, lanzamientoEn, aportes, acciones, eventos: [], misiones: [], secuencia: 0 };
+  const estado: EstadoDemo = { miembros, lanzamientoEn, aportes, acciones, eventos: [], misiones: [], carpetas: [], favoritos: [], secuencia: 0 };
   for (const a of aportes) eventosPorAporte(estado, a);
   for (const c of acciones) eventosPorAccion(estado, c, aportes.find((a) => a.id === c.aporteId)?.tipo ?? "skill");
   for (const id of ["demo-c9", "demo-c10"]) {

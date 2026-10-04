@@ -1,7 +1,7 @@
 // Implementación con Supabase. Corre en el servidor con la sesión del usuario: la RLS decide qué puede hacer.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AccionValida, AporteValido } from "@/domain/aportes";
-import type { Miembro, MisionDefinida } from "@/domain/tipos";
+import type { Carpeta, Favorito, Miembro, MisionDefinida } from "@/domain/tipos";
 import { faltaEntradaHoy, TOPE_ENTRADAS } from "./entrada";
 import { ErrorDatos, traducirErrorPostgres } from "./errores";
 import { LIMITE_APORTES, type FiltroAcciones, type FiltroAportes, type Repositorio } from "./repositorio";
@@ -120,6 +120,95 @@ export function crearRepositorioSupabase(
           .single<FilaAporte>(),
       );
       return aporteDesdeFila(fila);
+    },
+
+    async editarAporte(id, a) {
+      // El tipo no se cambia (la base tampoco lo permite). Sin filas = no es suyo (RLS) o ya no existe.
+      const filas = datos(
+        await cliente
+          .from("aportes")
+          .update({
+            link: a.link,
+            titulo: a.titulo,
+            imagen_url: a.imagenUrl,
+            por_que_sirve: a.porQueSirve,
+            como_se_usa: a.comoSeUsa,
+            fuente: a.fuente,
+            fecha_limite: a.fechaLimite,
+            que_mirar: a.queMirar,
+          })
+          .eq("id", id)
+          .select()
+          .overrideTypes<FilaAporte[], { merge: false }>(),
+      );
+      if (filas.length === 0) throw new ErrorDatos("no_permitido");
+      return aporteDesdeFila(filas[0]!);
+    },
+
+    async borrarAporte(id) {
+      const filas = datos(
+        await cliente.from("aportes").delete().eq("id", id).select("id").overrideTypes<{ id: string }[], { merge: false }>(),
+      );
+      if (filas.length === 0) throw new ErrorDatos("no_permitido");
+    },
+
+    async carpetas() {
+      const filas = datos(
+        await cliente
+          .from("carpetas")
+          .select("id, nombre, created_at")
+          .order("nombre")
+          .overrideTypes<{ id: string; nombre: string; created_at: string }[], { merge: false }>(),
+      );
+      return filas.map((f): Carpeta => ({ id: f.id, nombre: f.nombre, creadaEn: f.created_at }));
+    },
+
+    async favoritos() {
+      const filas = datos(
+        await cliente
+          .from("favoritos")
+          .select("aporte_id, carpeta_id")
+          .overrideTypes<{ aporte_id: string; carpeta_id: string }[], { merge: false }>(),
+      );
+      return filas.map((f): Favorito => ({ aporteId: f.aporte_id, carpetaId: f.carpeta_id }));
+    },
+
+    async crearCarpeta(nombre) {
+      const f = datos(
+        await cliente.from("carpetas").insert({ nombre }).select("id, nombre, created_at").single<{ id: string; nombre: string; created_at: string }>(),
+      );
+      return { id: f.id, nombre: f.nombre, creadaEn: f.created_at };
+    },
+
+    async renombrarCarpeta(id, nombre) {
+      const filas = datos(
+        await cliente.from("carpetas").update({ nombre }).eq("id", id).select("id").overrideTypes<{ id: string }[], { merge: false }>(),
+      );
+      if (filas.length === 0) throw new ErrorDatos("no_permitido");
+    },
+
+    async borrarCarpeta(id) {
+      const filas = datos(
+        await cliente.from("carpetas").delete().eq("id", id).select("id").overrideTypes<{ id: string }[], { merge: false }>(),
+      );
+      if (filas.length === 0) throw new ErrorDatos("no_permitido");
+    },
+
+    async guardarFavorito(aporteId, carpetaId) {
+      // Una sola carpeta por aporte: si ya estaba guardado, se mueve; si no, se agrega.
+      const movidos = datos(
+        await cliente
+          .from("favoritos")
+          .update({ carpeta_id: carpetaId })
+          .eq("aporte_id", aporteId)
+          .select("aporte_id")
+          .overrideTypes<{ aporte_id: string }[], { merge: false }>(),
+      );
+      if (movidos.length === 0) sinError(await cliente.from("favoritos").insert({ aporte_id: aporteId, carpeta_id: carpetaId }));
+    },
+
+    async quitarFavorito(aporteId) {
+      sinError(await cliente.from("favoritos").delete().eq("aporte_id", aporteId));
     },
 
     async accionar(aporteId: string, a: AccionValida) {

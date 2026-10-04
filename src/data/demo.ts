@@ -1,6 +1,7 @@
 // Implementación de demostración: datos de ejemplo en memoria, sin Supabase. Solo con HEROES_DEMO=1.
 // Aplica las mismas reglas que la migración (permisos, acciones por tipo, eventos de XP, capitán).
 import { validarAccion, validarMarcaUtil } from "@/domain/aportes";
+import { validarNombreCarpeta } from "@/domain/carpetas";
 import { capitanDeSemana, ordenDeIngreso } from "@/domain/mision";
 import { validarNombre } from "@/domain/perfil";
 import { aFecha, semanaDe } from "@/domain/tiempo";
@@ -39,6 +40,7 @@ export function crearRepositorioDemo(
     return `${prefijo}${estado.secuencia}`;
   };
   const buscarAporte = (id: string) => estado.aportes.find((a) => a.id === id);
+  const misCarpetas = () => estado.carpetas.filter((c) => c.perfilId === usuarioId);
 
   return {
     usuarioId,
@@ -96,6 +98,67 @@ export function crearRepositorioDemo(
       estado.aportes.push(aporte);
       eventosPorAporte(estado, aporte);
       return { ...aporte };
+    },
+
+    async editarAporte(id, datos) {
+      const aporte = buscarAporte(id);
+      if (!aporte) throw new ErrorDatos("no_encontrado");
+      if (aporte.autorId !== usuarioId) throw new ErrorDatos("no_permitido");
+      Object.assign(aporte, { ...datos, tipo: aporte.tipo });
+      return { ...aporte };
+    },
+
+    async borrarAporte(id) {
+      const aporte = buscarAporte(id);
+      if (!aporte) throw new ErrorDatos("no_encontrado");
+      if (aporte.autorId !== usuarioId) throw new ErrorDatos("no_permitido");
+      estado.aportes = estado.aportes.filter((a) => a.id !== id);
+      estado.acciones = estado.acciones.filter((c) => c.aporteId !== id);
+      estado.favoritos = estado.favoritos.filter((f) => f.aporteId !== id);
+    },
+
+    async carpetas() {
+      return misCarpetas()
+        .sort((a, b) => a.nombre.localeCompare(b.nombre, "es"))
+        .map(({ id, nombre, creadaEn }) => ({ id, nombre, creadaEn }));
+    },
+
+    async favoritos() {
+      return estado.favoritos.filter((f) => f.perfilId === usuarioId).map(({ aporteId, carpetaId }) => ({ aporteId, carpetaId }));
+    },
+
+    async crearCarpeta(nombre) {
+      const valido = validarNombreCarpeta(nombre, misCarpetas());
+      if (!valido.ok) throw new ErrorDatos("invalido", primerError(valido.errores));
+      const carpeta = { id: nuevoId("demo-f"), nombre: valido.valor, creadaEn: reloj().toISOString(), perfilId: usuarioId };
+      estado.carpetas.push(carpeta);
+      return { id: carpeta.id, nombre: carpeta.nombre, creadaEn: carpeta.creadaEn };
+    },
+
+    async renombrarCarpeta(id, nombre) {
+      const carpeta = misCarpetas().find((c) => c.id === id);
+      if (!carpeta) throw new ErrorDatos("no_permitido");
+      const valido = validarNombreCarpeta(nombre, misCarpetas(), id);
+      if (!valido.ok) throw new ErrorDatos("invalido", primerError(valido.errores));
+      carpeta.nombre = valido.valor;
+    },
+
+    async borrarCarpeta(id) {
+      if (!misCarpetas().some((c) => c.id === id)) throw new ErrorDatos("no_permitido");
+      estado.carpetas = estado.carpetas.filter((c) => c.id !== id);
+      estado.favoritos = estado.favoritos.filter((f) => f.carpetaId !== id);
+    },
+
+    async guardarFavorito(aporteId, carpetaId) {
+      if (!buscarAporte(aporteId)) throw new ErrorDatos("no_encontrado");
+      if (!misCarpetas().some((c) => c.id === carpetaId)) throw new ErrorDatos("no_permitido");
+      const previo = estado.favoritos.find((f) => f.perfilId === usuarioId && f.aporteId === aporteId);
+      if (previo) previo.carpetaId = carpetaId;
+      else estado.favoritos.push({ perfilId: usuarioId, aporteId, carpetaId });
+    },
+
+    async quitarFavorito(aporteId) {
+      estado.favoritos = estado.favoritos.filter((f) => !(f.perfilId === usuarioId && f.aporteId === aporteId));
     },
 
     async accionar(aporteId, datos) {

@@ -65,6 +65,19 @@ export interface EventoXp {
   creadoEn: FechaIso;
 }
 
+/** Carpeta de favoritos: privada de quien la crea (D43). */
+export interface Carpeta {
+  id: string;
+  nombre: string;
+  creadaEn: FechaIso;
+}
+
+/** Un aporte guardado en UNA carpeta (por persona). */
+export interface Favorito {
+  aporteId: string;
+  carpetaId: string;
+}
+
 export interface MisionDefinida {
   semana: Dia;
   accion: AccionMision;
