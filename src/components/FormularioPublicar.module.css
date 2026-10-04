@@ -1,0 +1,81 @@
+.tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--separacion-chica);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tipos legend {
+  margin-bottom: var(--separacion-chica);
+  padding: 0;
+}
+
+.opcion {
+  position: relative;
+  display: inline-flex;
+}
+
+/* El radio queda accesible (teclado y lector) pero se ve como chip. */
+.radio {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-boton);
+  padding: 0 14px;
+  background: var(--blanco);
+  border: var(--borde);
+  border-radius: var(--radio-pastilla);
+  box-shadow: var(--sombra-boton);
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+}
+
+.radio:checked + .chip {
+  background: var(--amarillo);
+  box-shadow: none;
+}
+
+.radio:focus-visible + .chip {
+  outline: var(--grosor-borde) solid var(--azul-heroe);
+  outline-offset: 2px;
+}
+
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--separacion-chica);
+}
+
+.fila .campo {
+  flex: 1 1 200px;
+}
+
+.estado {
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+  line-height: 1.4;
+}
+
+.imagen {
+  display: flex;
+  align-items: center;
+  gap: var(--separacion);
+}
+
+.imagen img {
+  width: 96px;
+  height: 64px;
+  object-fit: cover;
+  border: var(--borde);
+  border-radius: var(--radio-campo);
+  background: var(--blanco);
+}

@@ -44,6 +44,11 @@ textarea {
   outline-offset: 2px;
 }
 
+/* Sobre paneles blancos el amarillo casi no se ve: ahí el foco va en azul. */
+.panel :focus-visible {
+  outline-color: var(--azul-heroe);
+}
+
 .pantalla {
   width: 100%;
   max-width: var(--ancho-max);
