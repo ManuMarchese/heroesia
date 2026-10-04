@@ -19,6 +19,6 @@ export async function entrar(previo: EstadoEntrar, datos: FormData): Promise<Est
 }
 
 export async function salir(): Promise<void> {
-  if (!modoDemo() && configSupabase()) await (await crearClienteServidor()).auth.signOut();
+  if (!modoDemo() && configSupabase()) await (await crearClienteServidor()).auth.signOut({ scope: "local" });
   redirect(RUTA_ENTRAR);
 }
