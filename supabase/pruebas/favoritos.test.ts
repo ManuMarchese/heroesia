@@ -100,3 +100,17 @@ describe("editar y borrar aportes: solo el autor", () => {
     expect((await db.query<{ n: number }>("select count(*)::int as n from public.eventos_xp")).rows[0]!.n).toBe(antes);
   });
 });
+
+describe("tipo Tecnología (0007): funciona como Skill", () => {
+  it("se publica con 'cómo se usa', la acción es probar y los demás checks siguen firmes", async () => {
+    const id = await publicar(db, BETO, { ...SKILL, tipo: "tecnologia", titulo: "Tech", como_se_usa: "Así se usa" });
+    await como(db, ANA, "insert into public.acciones (aporte_id, tipo, resultado) values ($1, 'probar', 'Anda')", [id]);
+    await expect(como(db, ANA, "insert into public.acciones (aporte_id, tipo, texto) values ($1, 'leer', 'x')", [id])).rejects.toThrow(
+      /row-level security|duplicate key/,
+    );
+    expect((await db.query("select 1 from public.eventos_xp where aporte_id = $1 and tipo_aporte = 'tecnologia'", [id])).rows.length).toBeGreaterThan(0);
+    await expect(publicar(db, BETO, { ...SKILL, tipo: "inventado" })).rejects.toThrow(/aportes_tipo_valido/);
+    await expect(publicar(db, BETO, { ...SKILL, tipo: "repo", como_se_usa: "No va" })).rejects.toThrow(/aportes_como_se_usa_por_tipo/);
+    await expect(publicar(db, BETO, { ...SKILL, tipo: "noticia", fecha_limite: "2026-12-01" })).rejects.toThrow(/check/);
+  });
+});

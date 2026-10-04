@@ -83,7 +83,7 @@ export function CamposAporte(props: Props) {
     <>
       <Texto {...props} campo="titulo" etiqueta="Título" maximo={LIMITES.titulo} requerido />
       <Texto {...props} campo="porQueSirve" etiqueta="Por qué sirve" ayuda="Una línea: qué te resolvió o para qué lo usarías." maximo={LIMITES.porQueSirve} requerido />
-      {borrador.tipo === "skill" ? (
+      {borrador.tipo === "skill" || borrador.tipo === "tecnologia" ? (
         <Texto {...props} campo="comoSeUsa" etiqueta="Cómo se usa (opcional)" maximo={LIMITES.comoSeUsa} largo />
       ) : null}
       {borrador.tipo === "noticia" ? (

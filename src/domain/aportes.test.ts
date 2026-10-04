@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ACCION_DEL_TIPO,
+  ETIQUETA_TIPO,
   diasParaVencer,
   estaVencida,
   pruebaSocial,
@@ -101,6 +102,7 @@ describe("acciones", () => {
       noticia: "leer",
       oportunidad: "interes",
       proyecto: "feedback",
+      tecnologia: "probar",
     });
   });
 
@@ -149,3 +151,30 @@ describe("acciones", () => {
     expect(pruebaSocial("feedback", 4)).toBe("4 feedbacks");
   });
 });
+
+describe("tipo Tecnología (D44): funciona como Skill", () => {
+  const base = { tipo: "tecnologia", link: "https://example.com/tech", titulo: "Una herramienta", porQueSirve: "Ahorra tiempo" };
+
+  it("se publica con 'cómo se usa' opcional y sin campos de otros tipos", () => {
+    expect(validarAporte({ ...base, comoSeUsa: " Instalar y correr ", fuente: "x", queMirar: "y" })).toEqual({
+      ok: true,
+      valor: {
+        tipo: "tecnologia",
+        link: "https://example.com/tech",
+        titulo: "Una herramienta",
+        imagenUrl: null,
+        porQueSirve: "Ahorra tiempo",
+        comoSeUsa: "Instalar y correr",
+        fuente: null,
+        fechaLimite: null,
+        queMirar: null,
+      },
+    });
+  });
+
+  it("se muestra como Tecnología y su acción es 'Lo probé'", () => {
+    expect(ETIQUETA_TIPO.tecnologia).toBe("Tecnología");
+    expect(ACCION_DEL_TIPO.tecnologia).toBe("probar");
+  });
+});
+

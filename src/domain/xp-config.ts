@@ -42,13 +42,14 @@ export const NOMBRE_CLASE: Record<Clase, string> = {
   mentor: "Mentor",
 };
 
-/** Builder = Proyectos, Scout = Noticias y Oportunidades, Curador = Skills y Repos. Mentor = feedback útil dado. */
+/** Builder = Proyectos, Scout = Noticias y Oportunidades, Curador = Skills, Repos y Tecnología. Mentor = feedback útil dado. */
 export const CLASE_POR_TIPO: Record<TipoAporte, Clase> = {
   proyecto: "builder",
   noticia: "scout",
   oportunidad: "scout",
   skill: "curador",
   repo: "curador",
+  tecnologia: "curador",
 };
 
 /** Si dos clases empatan en XP, gana la primera de esta lista. */

@@ -12,6 +12,7 @@ const CAMPOS: Record<TipoAporte, Record<string, unknown>> = {
   noticia: { ...SKILL, tipo: "noticia", fuente: "example.com" },
   oportunidad: { ...SKILL, tipo: "oportunidad", fecha_limite: "2030-01-01" },
   proyecto: PROYECTO,
+  tecnologia: { ...SKILL, tipo: "tecnologia" },
 };
 const EXTRA = { probar: { resultado: "Anduvo bien" }, feedback: { texto: "Buen trabajo" } } as Record<string, object>;
 

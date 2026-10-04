@@ -3,20 +3,25 @@ import { ETIQUETA_TIPO } from "@/domain/aportes";
 import { TIPOS_APORTE, type TipoAporte } from "@/domain/tipos";
 import estilos from "./Pantallas.module.css";
 
-/** Selector de tipo de Explorar: un link por tipo, sin búsqueda de texto (D6). */
-export function SelectorTipo({ actual }: { actual: TipoAporte }) {
+const OPCIONES: readonly { clave: TipoAporte | "todos"; etiqueta: string; href: string }[] = [
+  { clave: "todos", etiqueta: "Todos", href: "/explorar" },
+  ...TIPOS_APORTE.map((tipo) => ({ clave: tipo, etiqueta: ETIQUETA_TIPO[tipo], href: `/explorar?tipo=${tipo}` })),
+];
+
+/** Selector de Explorar: Todos (por defecto) y un link por tipo, sin búsqueda de texto (D6, D44). */
+export function SelectorTipo({ actual }: { actual: TipoAporte | "todos" }) {
   return (
     <nav aria-label="Tipos de aporte">
       <ul className={estilos.tipos}>
-        {TIPOS_APORTE.map((tipo) => (
-          <li key={tipo}>
+        {OPCIONES.map((opcion) => (
+          <li key={opcion.clave}>
             <Link
-              href={`/explorar?tipo=${tipo}`}
+              href={opcion.href}
               className={estilos.tipo}
-              aria-current={tipo === actual ? "page" : undefined}
+              aria-current={opcion.clave === actual ? "page" : undefined}
               scroll={false}
             >
-              {ETIQUETA_TIPO[tipo]}
+              {opcion.etiqueta}
             </Link>
           </li>
         ))}

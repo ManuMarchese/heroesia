@@ -1,6 +1,6 @@
 // Tipos del dominio. Sin dependencias de Supabase ni de Next.
 
-export const TIPOS_APORTE = ["skill", "repo", "noticia", "oportunidad", "proyecto"] as const;
+export const TIPOS_APORTE = ["skill", "repo", "noticia", "oportunidad", "proyecto", "tecnologia"] as const;
 export type TipoAporte = (typeof TIPOS_APORTE)[number];
 
 export const TIPOS_ACCION = ["probar", "leer", "interes", "feedback"] as const;

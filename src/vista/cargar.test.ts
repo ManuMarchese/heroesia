@@ -133,3 +133,26 @@ describe("favoritos (D43)", () => {
     expect(await cargarFavoritos(repo())).toEqual([]);
   });
 });
+
+describe("Explorar: Todos y Tecnología (D44)", () => {
+  it("'todos' mezcla todos los tipos, del más nuevo al más viejo, y un tipo filtra", async () => {
+    const todos = await cargarExplorar(repo(), "todos", AHORA);
+    expect(new Set(todos.map((t) => t.tipo)).size).toBeGreaterThan(1);
+    const tiempos = todos.map((t) => t.id);
+    expect(tiempos).toHaveLength((await repo().aportes()).length);
+    const skills = await cargarExplorar(repo(), "skill", AHORA);
+    expect(skills.length).toBeGreaterThan(0);
+    expect(skills.every((t) => t.tipo === "skill")).toBe(true);
+    expect(await cargarExplorar(repo(), "tecnologia", AHORA)).toEqual([]);
+  });
+
+  it("un aporte de tecnología aparece en Todos y en Tecnología", async () => {
+    await repo().publicar({
+      tipo: "tecnologia", link: "https://example.com/t", titulo: "Tech", imagenUrl: null, porQueSirve: "Sirve",
+      comoSeUsa: null, fuente: null, fechaLimite: null, queMirar: null,
+    });
+    expect((await cargarExplorar(repo(), "tecnologia", AHORA)).map((t) => t.etiquetaTipo)).toEqual(["Tecnología"]);
+    expect((await cargarExplorar(repo(), "todos", AHORA))[0]).toMatchObject({ titulo: "Tech", etiquetaTipo: "Tecnología" });
+  });
+});
+

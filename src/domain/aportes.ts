@@ -8,6 +8,7 @@ export const ETIQUETA_TIPO: Record<TipoAporte, string> = {
   noticia: "Noticia",
   oportunidad: "Oportunidad",
   proyecto: "Proyecto",
+  tecnologia: "Tecnología",
 };
 
 /** Cada tipo tiene una sola acción. */
@@ -17,6 +18,7 @@ export const ACCION_DEL_TIPO: Record<TipoAporte, TipoAccion> = {
   noticia: "leer",
   oportunidad: "interes",
   proyecto: "feedback",
+  tecnologia: "probar",
 };
 
 export const ETIQUETA_ACCION: Record<TipoAccion, string> = {
@@ -99,7 +101,7 @@ export function validarAporte(entrada: AporteNuevo, ahora: Date = new Date()): R
   else if (porQueSirve.length > LIMITES.porQueSirve)
     errores.porQueSirve = `Por qué sirve: hasta ${LIMITES.porQueSirve} caracteres.`;
 
-  const comoSeUsa = tipo === "skill" ? opcional(entrada.comoSeUsa) : null;
+  const comoSeUsa = tipo === "skill" || tipo === "tecnologia" ? opcional(entrada.comoSeUsa) : null;
   if (comoSeUsa && comoSeUsa.length > LIMITES.comoSeUsa)
     errores.comoSeUsa = `Cómo se usa: hasta ${LIMITES.comoSeUsa} caracteres.`;
 

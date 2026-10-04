@@ -32,3 +32,8 @@
 .proyecto {
   background: var(--rosa);
 }
+
+.tecnologia {
+  background: var(--tinta);
+  color: var(--blanco);
+}

@@ -83,10 +83,11 @@ export async function abrirInicio(repo: Repositorio, reloj: () => Date, origen: 
   return cargarBase(repo, new Date(reloj().getTime() + TOLERANCIA_RELOJES_MS), origen);
 }
 
-export async function cargarExplorar(repo: Repositorio, tipo: TipoAporte, ahora: Date): Promise<TarjetaAporteVista[]> {
+/** `tipo` "todos" muestra todos los tipos mezclados, del más nuevo al más viejo. */
+export async function cargarExplorar(repo: Repositorio, tipo: TipoAporte | "todos", ahora: Date): Promise<TarjetaAporteVista[]> {
   const [miembros, aportes, eventosCrudos, favoritos] = await Promise.all([
     repo.miembros(),
-    repo.aportes({ tipo }),
+    repo.aportes(tipo === "todos" ? {} : { tipo }),
     repo.eventosXp(),
     repo.favoritos(),
   ]);
