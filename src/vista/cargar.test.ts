@@ -39,6 +39,16 @@ describe("Base del héroe", () => {
     });
   });
 
+  it("arma el resumen para copiar y le ofrece al capitán definir la misión", async () => {
+    const base = await cargarBase(repo(), AHORA, "https://heroes.example.com");
+    expect(base.mision).toMatchObject({ esCapitan: true, puedeDefinir: true, titulo: "Sumar 6 aportes", hecho: 4, meta: 6 });
+    const lineas = base.resumen.split("\n");
+    expect(lineas[0]).toBe("*Heroes IA · Semana del 5/10 al 11/10*");
+    expect(lineas).toContain("1. Revisar un PR con un agente de código (Skill, de Ana) · 2 lo probaron");
+    expect(lineas).toContain("*Misión del equipo:* Sumar 6 aportes · 4/6");
+    expect(lineas.at(-1)).toBe("Entrá y sumá: https://heroes.example.com");
+  });
+
   it("marca lo propio y lo ya hecho, con el XP ganado", async () => {
     const base = await cargarBase(repo(), AHORA);
     const propio = base.loNuevo.find((t) => t.id === "demo-a5");

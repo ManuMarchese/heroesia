@@ -4,7 +4,6 @@ import { ETIQUETA_TIPO, LIMITES } from "@/domain/aportes";
 import { TIPOS_APORTE, type Dia } from "@/domain/tipos";
 import type { BorradorAporte } from "@/casos/publicar";
 import campos from "./Campos.module.css";
-import estilos from "./FormularioPublicar.module.css";
 
 type Campo = keyof BorradorAporte;
 
@@ -57,20 +56,20 @@ function Texto(props: Props & { campo: Campo; etiqueta: string; ayuda?: string; 
 
 export function SelectorTipoAporte({ borrador, errores, cambiar }: Pick<Props, "borrador" | "errores" | "cambiar">) {
   return (
-    <fieldset className={estilos.tipos} aria-describedby={errores.tipo ? "error-tipo" : undefined}>
+    <fieldset className={campos.opciones} aria-describedby={errores.tipo ? "error-tipo" : undefined}>
       <legend className={campos.etiqueta}>Tipo</legend>
       {TIPOS_APORTE.map((tipo) => (
-        <label key={tipo} className={estilos.opcion}>
+        <label key={tipo} className={campos.opcion}>
           <input
             type="radio"
             name="tipo"
             value={tipo}
-            className={estilos.radio}
+            className={campos.radio}
             checked={borrador.tipo === tipo}
             onChange={() => cambiar("tipo", tipo)}
             required
           />
-          <span className={estilos.chip}>{ETIQUETA_TIPO[tipo]}</span>
+          <span className={campos.chip}>{ETIQUETA_TIPO[tipo]}</span>
         </label>
       ))}
       <MensajeError campo="tipo" errores={errores} />

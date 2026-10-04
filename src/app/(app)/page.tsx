@@ -1,7 +1,10 @@
+import { headers } from "next/headers";
 import Link from "next/link";
 import { requireUser } from "@/auth/sesion";
+import { origenDelPedido } from "@/auth/validacion";
+import { BotonCopiarResumen } from "@/components/BotonCopiarResumen";
 import { EstadoVacio } from "@/components/EstadoVacio";
-import { Icono } from "@/components/Icono";
+import { FormularioMision } from "@/components/FormularioMision";
 import { Marca } from "@/components/Marca";
 import estilos from "@/components/Pantallas.module.css";
 import { ListaAportes } from "@/components/TarjetaAporte";
@@ -13,7 +16,7 @@ import { abrirInicio } from "@/vista/cargar";
 /** Base del héroe (U1, D12): tu nivel y récord, la misión del equipo y lo nuevo. */
 export default async function PaginaInicio() {
   const usuario = await requireUser();
-  const base = await abrirInicio(await obtenerRepositorio(usuario.id), new Date());
+  const base = await abrirInicio(await obtenerRepositorio(usuario.id), new Date(), origenDelPedido(await headers()));
   return (
     <>
       <Marca />
@@ -22,12 +25,8 @@ export default async function PaginaInicio() {
       {base.mision ? (
         <TarjetaMision
           mision={base.mision}
-          pie={
-            <button type="button" className="boton" disabled>
-              <Icono nombre="copiar" tam={18} />
-              Copiar resumen
-            </button>
-          }
+          formulario={base.mision.puedeDefinir ? <FormularioMision /> : null}
+          pie={<BotonCopiarResumen texto={base.resumen} />}
         />
       ) : null}
       <div className={estilos.encabezado}>

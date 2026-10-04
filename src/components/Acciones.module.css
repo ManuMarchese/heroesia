@@ -1,0 +1,77 @@
+/* Acción de cada aporte, respuestas (resultados y feedback) y Copiar resumen. */
+.accion,
+.copiar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.abierta {
+  flex-basis: 100%;
+  align-items: stretch;
+}
+
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--alto-boton);
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+}
+
+.hecha {
+  padding: 0 16px;
+  background: var(--menta);
+  border: var(--borde);
+  border-radius: var(--radio-pastilla);
+}
+
+.mensaje {
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+  line-height: 1.4;
+}
+
+.respuestas summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--alto-boton);
+  cursor: pointer;
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--separacion-chica);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.respuesta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 12px;
+  border: var(--borde);
+  border-radius: var(--radio-campo);
+  font-size: var(--tam-texto);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.util {
+  padding: 0 10px;
+  background: var(--menta);
+  border: var(--borde);
+  border-radius: var(--radio-pastilla);
+  font-size: var(--tam-chip);
+  font-weight: var(--peso-extra);
+  line-height: var(--linea-chip);
+}

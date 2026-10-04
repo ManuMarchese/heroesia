@@ -110,19 +110,3 @@
 .vencida .chip {
   filter: grayscale(1);
 }
-
-.estado {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: var(--alto-boton);
-  font-size: var(--tam-boton);
-  font-weight: var(--peso-extra);
-}
-
-.hecha {
-  padding: 0 16px;
-  background: var(--menta);
-  border: var(--borde);
-  border-radius: var(--radio-pastilla);
-}

@@ -2,6 +2,7 @@ import type { TarjetaAporteVista } from "@/vista/aportes";
 import { AccionAporte } from "./AccionAporte";
 import { ChipTipo } from "./ChipTipo";
 import { Icono } from "./Icono";
+import { RespuestasAporte } from "./RespuestasAporte";
 import estilos from "./TarjetaAporte.module.css";
 
 /** Tarjeta de aporte del prototipo: chip de tipo, autor, hace cuánto, prueba social y acción. */
@@ -37,6 +38,7 @@ export function TarjetaAporte({ tarjeta }: { tarjeta: TarjetaAporteVista }) {
         </div>
         <AccionAporte tarjeta={tarjeta} />
       </div>
+      <RespuestasAporte tarjeta={tarjeta} />
     </article>
   );
 }

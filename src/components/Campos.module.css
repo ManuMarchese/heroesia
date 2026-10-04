@@ -58,3 +58,54 @@ textarea.campo {
   flex-wrap: wrap;
   gap: var(--separacion-chica);
 }
+
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--separacion-chica);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opciones legend {
+  margin-bottom: var(--separacion-chica);
+  padding: 0;
+}
+
+.opcion {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Opciones de radio que se ven como chips; el radio queda accesible para teclado y lector. */
+.radio {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-boton);
+  padding: 0 14px;
+  background: var(--blanco);
+  border: var(--borde);
+  border-radius: var(--radio-pastilla);
+  box-shadow: var(--sombra-boton);
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+}
+
+.radio:checked + .chip {
+  background: var(--amarillo);
+  box-shadow: none;
+}
+
+.radio:focus-visible + .chip {
+  outline: var(--grosor-borde) solid var(--azul-heroe);
+  outline-offset: 2px;
+}
