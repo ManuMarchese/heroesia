@@ -101,4 +101,4 @@ Repo vacío: no hay `archivo:línea`; la fuente de cada ítem es la decisión.
 
 ## 7. Seguimiento
 - [x] Plan aprobado por Manu (D21)
-- [x] 2 Investigador (reporte verificado, `docs/INVESTIGACION-v0.1.md`; parada por Q1, D30) · [x] 3 Builder (pasadas 1 y 2 hechas y verificadas, D34, D36) · [ ] 4 Guardián · [ ] 5 Deploy (Manu, Desktop) · [ ] 6 Cierre
+- [x] 2 Investigador (reporte verificado, `docs/INVESTIGACION-v0.1.md`; parada por Q1, D30) · [x] 3 Builder (pasadas 1 y 2 hechas y verificadas, D34, D36) · [ ] 4 Guardián (1.ª revisión: RECHAZADO con 3 bloqueantes, D37; pasada 3 de correcciones, D38) · [ ] 5 Deploy (Manu, Desktop) · [ ] 6 Cierre
