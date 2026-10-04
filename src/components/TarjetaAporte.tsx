@@ -1,12 +1,15 @@
 import type { TarjetaAporteVista } from "@/vista/aportes";
 import { AccionAporte } from "./AccionAporte";
+import { AdministrarAporte } from "./AdministrarAporte";
+import { BotonFavorito, type CarpetaOpcion } from "./BotonFavorito";
 import { ChipTipo } from "./ChipTipo";
 import { Icono } from "./Icono";
 import { RespuestasAporte } from "./RespuestasAporte";
+import favoritos from "./Favoritos.module.css";
 import estilos from "./TarjetaAporte.module.css";
 
 /** Tarjeta de aporte del prototipo: chip de tipo, autor, hace cuánto, prueba social y acción. */
-export function TarjetaAporte({ tarjeta }: { tarjeta: TarjetaAporteVista }) {
+export function TarjetaAporte({ tarjeta, carpetas = [] }: { tarjeta: TarjetaAporteVista; carpetas?: readonly CarpetaOpcion[] }) {
   const vencida = tarjeta.vencimiento?.vencida ?? false;
   return (
     <article className={vencida ? `${estilos.tarjeta} ${estilos.vencida}` : estilos.tarjeta}>
@@ -38,17 +41,27 @@ export function TarjetaAporte({ tarjeta }: { tarjeta: TarjetaAporteVista }) {
         </div>
         <AccionAporte tarjeta={tarjeta} />
       </div>
+      <div className={favoritos.fila}>
+        <BotonFavorito aporteId={tarjeta.id} carpetaId={tarjeta.carpetaId} carpetas={carpetas} />
+        {tarjeta.esPropio ? <AdministrarAporte aporteId={tarjeta.id} /> : null}
+      </div>
       <RespuestasAporte tarjeta={tarjeta} />
     </article>
   );
 }
 
-export function ListaAportes({ tarjetas }: { tarjetas: readonly TarjetaAporteVista[] }) {
+export function ListaAportes({
+  tarjetas,
+  carpetas = [],
+}: {
+  tarjetas: readonly TarjetaAporteVista[];
+  carpetas?: readonly CarpetaOpcion[];
+}) {
   return (
     <ul className={estilos.lista}>
       {tarjetas.map((tarjeta) => (
         <li key={tarjeta.id}>
-          <TarjetaAporte tarjeta={tarjeta} />
+          <TarjetaAporte tarjeta={tarjeta} carpetas={carpetas} />
         </li>
       ))}
     </ul>

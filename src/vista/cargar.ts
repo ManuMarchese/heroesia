@@ -33,7 +33,7 @@ export function inicioDeConsulta(semana: Dia): string {
 export async function cargarBase(repo: Repositorio, ahora: Date, origen: string | null = null): Promise<VistaBase> {
   const semana = semanaDe(ahora);
   const desde = inicioDeConsulta(semana);
-  const [miembros, lanzamientoEn, recientes, aportesSemana, accionesSemana, eventosCrudos, definida] = await Promise.all([
+  const [miembros, lanzamientoEn, recientes, aportesSemana, accionesSemana, eventosCrudos, definida, favoritos] = await Promise.all([
     repo.miembros(),
     repo.lanzamientoEn(),
     repo.aportes({ limite: APORTES_EN_INICIO }),
@@ -41,6 +41,7 @@ export async function cargarBase(repo: Repositorio, ahora: Date, origen: string 
     repo.acciones({ desde }),
     repo.eventosXp(),
     repo.misionDefinida(semana),
+    repo.favoritos(),
   ]);
   const acciones = await repo.acciones({ aporteIds: recientes.map((a) => a.id) });
   const eventos = asignarXp(eventosCrudos);
@@ -53,7 +54,7 @@ export async function cargarBase(repo: Repositorio, ahora: Date, origen: string 
   return {
     heroe: vistaHeroe(eventos, usuarioId, yo?.nombre ?? "", ahora),
     mision: vista,
-    loNuevo: tarjetasDeAportes({ aportes: recientes, acciones, miembros, eventos, usuarioId, ahora }),
+    loNuevo: tarjetasDeAportes({ aportes: recientes, acciones, miembros, eventos, favoritos, usuarioId, ahora }),
     resumen: textoResumenSemanal({
       semana,
       destacados: mejoresDeLaSemana(aportesSemana, accionesSemana, miembros, semana),
@@ -83,9 +84,14 @@ export async function abrirInicio(repo: Repositorio, reloj: () => Date, origen: 
 }
 
 export async function cargarExplorar(repo: Repositorio, tipo: TipoAporte, ahora: Date): Promise<TarjetaAporteVista[]> {
-  const [miembros, aportes, eventosCrudos] = await Promise.all([repo.miembros(), repo.aportes({ tipo }), repo.eventosXp()]);
+  const [miembros, aportes, eventosCrudos, favoritos] = await Promise.all([
+    repo.miembros(),
+    repo.aportes({ tipo }),
+    repo.eventosXp(),
+    repo.favoritos(),
+  ]);
   const acciones = await repo.acciones({ aporteIds: aportes.map((a) => a.id) });
-  return tarjetasDeAportes({ aportes, acciones, miembros, eventos: asignarXp(eventosCrudos), usuarioId: repo.usuarioId, ahora });
+  return tarjetasDeAportes({ aportes, acciones, miembros, eventos: asignarXp(eventosCrudos), favoritos, usuarioId: repo.usuarioId, ahora });
 }
 
 export async function cargarPerfil(repo: Repositorio, ahora: Date): Promise<VistaHeroe> {
@@ -93,3 +99,28 @@ export async function cargarPerfil(repo: Repositorio, ahora: Date): Promise<Vist
   const nombre = miembros.find((m) => m.id === repo.usuarioId)?.nombre ?? "";
   return vistaHeroe(asignarXp(eventosCrudos), repo.usuarioId, nombre, ahora);
 }
+
+/** Mis carpetas de favoritos, para elegir dónde guardar desde cada tarjeta. */
+export async function cargarCarpetas(repo: Repositorio): Promise<{ id: string; nombre: string }[]> {
+  return (await repo.carpetas()).map(({ id, nombre }) => ({ id, nombre }));
+}
+
+export interface CarpetaConAportes {
+  id: string;
+  nombre: string;
+  aportes: { id: string; titulo: string; link: string }[];
+}
+
+/** Mis carpetas con lo que guardé en cada una (privado, D43). Lo guardado que ya se borró no aparece. */
+export async function cargarFavoritos(repo: Repositorio): Promise<CarpetaConAportes[]> {
+  const [carpetas, favoritos] = await Promise.all([repo.carpetas(), repo.favoritos()]);
+  const aportes = await Promise.all(favoritos.map(async (f) => ({ f, aporte: await repo.aporte(f.aporteId) })));
+  return carpetas.map((c) => ({
+    id: c.id,
+    nombre: c.nombre,
+    aportes: aportes
+      .filter(({ f, aporte }) => f.carpetaId === c.id && aporte !== null)
+      .map(({ aporte }) => ({ id: aporte!.id, titulo: aporte!.titulo, link: aporte!.link })),
+  }));
+}
+

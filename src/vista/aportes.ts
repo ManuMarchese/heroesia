@@ -1,7 +1,7 @@
 // Tarjetas de aporte (U1, U3, U4): chip de tipo, autor, hace cuánto, prueba social y la acción del tipo.
 import { ACCION_DEL_TIPO, diasParaVencer, ETIQUETA_ACCION, ETIQUETA_TIPO, pruebaSocial } from "@/domain/aportes";
 import { haceCuanto, textoVencimiento } from "@/domain/formato";
-import type { Accion, Aporte, Miembro, TipoAccion, TipoAporte } from "@/domain/tipos";
+import type { Accion, Aporte, Favorito, Miembro, TipoAccion, TipoAporte } from "@/domain/tipos";
 import { xpPorAporte, type EventoConXp } from "@/domain/xp";
 
 export interface RespuestaVista {
@@ -31,6 +31,8 @@ export interface TarjetaAporteVista {
   xpGanado: number;
   /** Resultados de "Lo probé" o feedbacks, del más nuevo al más viejo. */
   respuestas: RespuestaVista[];
+  /** La carpeta de favoritos donde lo guardó quien mira (D43), o null si no lo guardó. */
+  carpetaId: string | null;
 }
 
 /** Lo que ve quien ya hizo la acción. */
@@ -53,12 +55,14 @@ export interface DatosTarjetas {
   acciones: readonly Accion[];
   miembros: readonly Miembro[];
   eventos: readonly EventoConXp[];
+  /** Los favoritos de quien mira (privados). */
+  favoritos?: readonly Favorito[];
   usuarioId: string;
   ahora: Date;
 }
 
 export function tarjetasDeAportes(datos: DatosTarjetas): TarjetaAporteVista[] {
-  const { aportes, acciones, miembros, eventos, usuarioId, ahora } = datos;
+  const { aportes, acciones, miembros, eventos, favoritos = [], usuarioId, ahora } = datos;
   const nombres = new Map(miembros.map((m) => [m.id, m.nombre]));
   const nombre = (id: string) => nombres.get(id) ?? "Alguien";
 
@@ -104,6 +108,7 @@ export function tarjetasDeAportes(datos: DatosTarjetas): TarjetaAporteVista[] {
       },
       xpGanado: xpPorAporte(eventos, usuarioId, aporte.id),
       respuestas,
+      carpetaId: favoritos.find((f) => f.aporteId === aporte.id)?.carpetaId ?? null,
     };
   });
 }

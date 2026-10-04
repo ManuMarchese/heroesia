@@ -6,7 +6,7 @@ import { ListaAportes } from "@/components/TarjetaAporte";
 import { obtenerRepositorio } from "@/data";
 import { ETIQUETA_TIPO, esTipoAporte } from "@/domain/aportes";
 import type { TipoAporte } from "@/domain/tipos";
-import { cargarExplorar } from "@/vista/cargar";
+import { cargarCarpetas, cargarExplorar } from "@/vista/cargar";
 
 export const metadata: Metadata = { title: "Explorar" };
 
@@ -29,14 +29,16 @@ export default async function PaginaExplorar({ searchParams }: { searchParams: P
   const pedido = (await searchParams).tipo;
   const valor = Array.isArray(pedido) ? pedido[0] : pedido;
   const tipo: TipoAporte = valor && esTipoAporte(valor) ? valor : "skill";
-  const tarjetas = await cargarExplorar(await obtenerRepositorio(usuario.id), tipo, new Date());
+  const repo = await obtenerRepositorio(usuario.id);
+  const tarjetas = await cargarExplorar(repo, tipo, new Date());
+  const carpetas = await cargarCarpetas(repo);
   return (
     <>
       <h1 className="titulo-seccion">Explorar</h1>
       <SelectorTipo actual={tipo} />
       <h2 className="solo-lectores">{ETIQUETA_TIPO[tipo]}</h2>
       {tarjetas.length > 0 ? (
-        <ListaAportes tarjetas={tarjetas} />
+        <ListaAportes tarjetas={tarjetas} carpetas={carpetas} />
       ) : (
         <EstadoVacio titulo={VACIO[tipo].titulo} texto={VACIO[tipo].texto} href={`/publicar?tipo=${tipo}`} />
       )}

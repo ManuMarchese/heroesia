@@ -11,12 +11,14 @@ import { ListaAportes } from "@/components/TarjetaAporte";
 import { TarjetaHeroe } from "@/components/TarjetaHeroe";
 import { TarjetaMision } from "@/components/TarjetaMision";
 import { obtenerRepositorio } from "@/data";
-import { abrirInicio } from "@/vista/cargar";
+import { abrirInicio, cargarCarpetas } from "@/vista/cargar";
 
 /** Base del héroe (U1, D12): tu nivel y récord, la misión del equipo y lo nuevo. */
 export default async function PaginaInicio() {
   const usuario = await requireUser();
-  const base = await abrirInicio(await obtenerRepositorio(usuario.id), () => new Date(), origenDelPedido(await headers()));
+  const repo = await obtenerRepositorio(usuario.id);
+  const base = await abrirInicio(repo, () => new Date(), origenDelPedido(await headers()));
+  const carpetas = await cargarCarpetas(repo);
   return (
     <>
       <Marca />
@@ -36,7 +38,7 @@ export default async function PaginaInicio() {
         </Link>
       </div>
       {base.loNuevo.length > 0 ? (
-        <ListaAportes tarjetas={base.loNuevo} />
+        <ListaAportes tarjetas={base.loNuevo} carpetas={carpetas} />
       ) : (
         <EstadoVacio
           titulo="Todavía no hay aportes"

@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { salir } from "@/auth/acciones";
 import { requireUser } from "@/auth/sesion";
 import { FormularioNombre } from "@/components/FormularioNombre";
+import { MisFavoritos } from "@/components/MisFavoritos";
 import estilos from "@/components/Pantallas.module.css";
 import { TarjetaHeroe } from "@/components/TarjetaHeroe";
 import { obtenerRepositorio } from "@/data";
 import { diaCorto } from "@/domain/tiempo";
 import { DIAS_CLASE } from "@/domain/xp-config";
 import { modoDemo } from "@/supabase/config";
-import { cargarPerfil } from "@/vista/cargar";
+import { cargarFavoritos, cargarPerfil } from "@/vista/cargar";
 
 export const metadata: Metadata = { title: "Perfil" };
 
@@ -17,7 +18,8 @@ const numero = (n: number) => n.toLocaleString("es-AR");
 /** Perfil (U5): nivel, rango, clase, récord y XP; el nombre que ve el grupo y Salir. */
 export default async function PaginaPerfil() {
   const usuario = await requireUser();
-  const heroe = await cargarPerfil(await obtenerRepositorio(usuario.id), new Date());
+  const repo = await obtenerRepositorio(usuario.id);
+  const [heroe, carpetas] = await Promise.all([cargarPerfil(repo, new Date()), cargarFavoritos(repo)]);
   const falta = heroe.xpDelNivel - heroe.xpEnNivel;
   return (
     <>
@@ -48,6 +50,13 @@ export default async function PaginaPerfil() {
             {heroe.esNuevoRecord ? " · ¡Nuevo récord esta semana!" : ""}
           </dd>
         </dl>
+      </section>
+      <section className="panel" aria-labelledby="titulo-favoritos">
+        <h2 id="titulo-favoritos" className={estilos.subtitulo}>
+          Mis favoritos
+        </h2>
+        <p className="texto-meta">Tus carpetas son privadas: solo las ves vos.</p>
+        <MisFavoritos carpetas={carpetas} />
       </section>
       <section className="panel" aria-labelledby="titulo-nombre">
         <h2 id="titulo-nombre" className={estilos.subtitulo}>

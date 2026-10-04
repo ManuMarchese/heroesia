@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { crearRepositorioDemo } from "@/data/demo";
 import { USUARIO_DEMO, crearEstadoDemo, type EstadoDemo } from "@/data/demo-datos";
-import { APORTES_EN_INICIO, abrirInicio, cargarBase, cargarExplorar, cargarPerfil } from "./cargar";
+import { APORTES_EN_INICIO, abrirInicio, cargarBase, cargarCarpetas, cargarExplorar, cargarFavoritos, cargarPerfil } from "./cargar";
 
 const AHORA = new Date("2026-10-07T15:00:00Z"); // miércoles 12:00 en Buenos Aires
 const VOS = USUARIO_DEMO.id;
@@ -102,5 +102,34 @@ describe("Perfil", () => {
     expect(heroe).toMatchObject({ nombre: USUARIO_DEMO.nombre, rango: "Recluta", record: 1 });
     expect(heroe.clase).not.toBeNull();
     expect(heroe.xpTotal).toBeGreaterThan(0);
+  });
+});
+
+describe("favoritos (D43)", () => {
+  it("las tarjetas marcan la carpeta donde guardé el aporte y mis carpetas salen con lo que guardé", async () => {
+    const [aporte] = await repo().aportes({ limite: 1 });
+    const carpeta = await repo().crearCarpeta("Para probar");
+    await repo().crearCarpeta("Vacía");
+    await repo().guardarFavorito(aporte!.id, carpeta.id);
+    const base = await cargarBase(repo(), AHORA);
+    expect(base.loNuevo.find((t) => t.id === aporte!.id)?.carpetaId).toBe(carpeta.id);
+    expect(base.loNuevo.filter((t) => t.carpetaId !== null)).toHaveLength(1);
+    expect(await cargarCarpetas(repo())).toEqual([
+      { id: carpeta.id, nombre: "Para probar" },
+      expect.objectContaining({ nombre: "Vacía" }),
+    ]);
+    const favoritos = await cargarFavoritos(repo());
+    expect(favoritos.find((c) => c.id === carpeta.id)?.aportes).toEqual([
+      { id: aporte!.id, titulo: aporte!.titulo, link: aporte!.link },
+    ]);
+    expect(favoritos.find((c) => c.nombre === "Vacía")?.aportes).toEqual([]);
+  });
+
+  it("los favoritos de otra persona no se ven en mis tarjetas", async () => {
+    const [aporte] = await repo().aportes({ limite: 1 });
+    const carpeta = await repo("demo-a").crearCarpeta("Suya");
+    await repo("demo-a").guardarFavorito(aporte!.id, carpeta.id);
+    expect((await cargarBase(repo(), AHORA)).loNuevo.every((t) => t.carpetaId === null)).toBe(true);
+    expect(await cargarFavoritos(repo())).toEqual([]);
   });
 });

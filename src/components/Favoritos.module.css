@@ -1,0 +1,76 @@
+/* Editar, borrar y favoritos de cada aporte (D43) y la sección Mis favoritos del Perfil. */
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--separacion-chica);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--separacion-chica);
+  flex-basis: 100%;
+  padding: 12px;
+  background: var(--blanco);
+  border: var(--borde);
+  border-radius: var(--radio-campo);
+}
+
+.carpetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--separacion-chica);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activa {
+  background: var(--menta);
+}
+
+.aviso {
+  margin: 0;
+  font-size: var(--tam-meta);
+  font-weight: var(--peso-extra);
+  line-height: 1.4;
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--separacion-chica);
+  padding-bottom: 12px;
+}
+
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--separacion-chica);
+}
+
+.nombre {
+  margin: 0;
+  font-size: var(--tam-boton);
+  font-weight: var(--peso-extra);
+}
+
+.guardados {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0 0 0 18px;
+}
+
+.listado {
+  display: flex;
+  flex-direction: column;
+  gap: var(--separacion-chica);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

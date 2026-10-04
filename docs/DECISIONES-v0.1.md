@@ -272,3 +272,8 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Costos y límites (a la vista de Manu):** (1) no hay recuperación de clave por mail: quien la olvida, pide que Manu se la cambie por SQL; (2) cada alta ejecuta el trigger de otra app del proyecto (`oh_on_auth_user_created` crea una fila en `oh_profiles` con el email inventado); (3) la confirmación de email apagada es un ajuste del proyecto: si se enciende, el alta falla con un mensaje claro.
 - **Evidencia:** tests (405+) y prueba real de `signUp` contra el proyecto. NO VERIFICADO: el alta completa desde el navegador en producción.
 
+## D43 · Editar, borrar y favoritos con carpetas (2026-10-04)
+- **Qué:** (1) Cada aporte propio tiene **Editar** (mismos campos, el tipo no cambia) y **Borrar** (con confirmación: se van también las pruebas y el feedback; el XP ya ganado no se resta). Solo su autor, lo exige la base (RLS ya lo hacía). (2) **Favoritos privados:** cada persona crea sus carpetas (nombre de hasta 40, sin repetir) y guarda cada aporte en UNA sola carpeta (guardar de nuevo lo mueve); en Perfil, "Mis favoritos" muestra las carpetas con lo guardado, y permite renombrar y borrar (borrar una carpeta saca lo guardado, no borra aportes). Migración `0006_favoritos.sql`.
+- **Quién:** Manu eligió: solo el autor; se borra todo y el XP queda; carpetas propias; privados; una carpeta por aporte. Orquestador: implementación.
+- **Evidencia:** 437 tests (PGlite: privacidad, una carpeta por aporte, borrado en cascada y XP intacto) y prueba en navegador en modo demostración (publicar, guardar en carpeta nueva, Perfil, editar y borrar). NO VERIFICADO contra el Supabase real hasta aplicar 0006 y probar en producción.
+
