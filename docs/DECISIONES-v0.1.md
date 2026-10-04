@@ -152,3 +152,26 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Qué:** el día 1 la app arranca vacía y la primera misión es "cada uno suma 2 aportes". Manu eligió esta opción en lugar de la recomendada (contenido semilla). El contenido semilla pasa a opcional: si Manu pasa links, se cargan.
 - **Quién:** [Manu, 2026-10-03].
 - **Costo / riesgo asumido:** la primera pantalla puede verse vacía y depende de que todos entren el primer día. Mitigación: estados vacíos con un llamado a sumar el primer aporte y la misión inicial en la pantalla de inicio.
+
+## Etapa 2: arranque del Investigador (2026-10-03)
+
+### D25. Autonomía hasta el Guardián
+- **Qué:** Manu da el "Dale" para el Investigador y autoriza correr Investigador → Builder → Guardián seguidos, con avisos en cada etapa en lugar de puertas. El orquestador se detiene y le pregunta si: (1) el Investigador encuentra algo que cambie una decisión suya (por ejemplo, que el plan gratis no alcance para el link mágico, Q1); (2) el Guardián rechaza dos veces; (3) hace falta gasto, merge o deploy, que siguen siendo puertas de Manu (D16, D18).
+- **Quién:** [Manu, 2026-10-03]. Eligió "Dale, con autonomía hasta el Guardián".
+- **Por qué:** la meta es hoy (D19).
+
+### D26. Rama `main` creada
+- **Qué:** `main` se creó en el remoto apuntando a `40ad754` (solo documentación) para que el Guardián compare el código contra una base. `origin/HEAD` local apunta a `origin/main`. La rama de trabajo sigue siendo `claude/heroes-ia-app-planning-tdopih`; el merge a `main` lo decide Manu.
+- **Quién:** [Manu, 2026-10-03]. Eligió "Sí, creá main".
+- **Evidencia:** `git push origin 40ad754:refs/heads/main` terminó con exit 0; `git ls-remote origin` muestra `main`, la rama de trabajo y `HEAD` en `40ad754`; `git symbolic-ref refs/remotes/origin/HEAD` devuelve `refs/remotes/origin/main`.
+- **Nota:** cuál es la rama por defecto en GitHub no cambió con esto (**NO VERIFICADO**: el `HEAD` del remoto no indica cuál es). Si Manu quiere que sea `main`, se cambia en los ajustes del repo en GitHub; no verifiqué los nombres exactos de los botones.
+
+### D27. Investigador lanzado como agente genérico
+- **Qué:** el Investigador corre como agente genérico (Sonnet) con el cuerpo de la plantilla pegado como prompt y las preguntas Q1 a Q8 del PLAN. No se pudo cargar la definición ni fijar el `effort` por estar a mitad de sesión. Es de solo lectura por instrucción; se verifica con `git status` limpio al terminar.
+- **Quién:** orquestador, dentro de lo aprobado en D21 y D25.
+- **Por qué:** `reference/agentes.md` prevé este caso: las definiciones creadas a mitad de sesión no se cargan.
+
+### D28. npm funciona desde este entorno
+- **Qué:** el registro de npm responde desde la sesión en la nube: `npm view next version` devolvió 16.3.8 y `npm view @supabase/supabase-js version` devolvió 2.117.2 (2026-10-03, 23:59 UTC). Node v22.22.0 y npm 10.9.4. Cierra el "NO VERIFICADO" del PLAN sobre `npm`.
+- **Quién:** orquestador.
+- **Evidencia:** salida de los comandos citados. No prueba que `npm ci` ni el build funcionen: eso lo verifica el Builder en copia limpia.
