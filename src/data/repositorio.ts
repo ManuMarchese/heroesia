@@ -29,6 +29,8 @@ export interface Repositorio {
   /** Quién está usando la app (sale de la sesión). */
   readonly usuarioId: string;
   miembros(): Promise<Miembro[]>;
+  /** configuracion.lanzamiento_en (lo fija Manu con SQL), o null. */
+  lanzamientoEn(): Promise<Dia | null>;
   /** Más nuevos primero. */
   aportes(filtro?: FiltroAportes): Promise<Aporte[]>;
   aporte(id: string): Promise<Aporte | null>;

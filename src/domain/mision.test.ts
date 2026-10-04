@@ -7,25 +7,28 @@ import {
   progresoMision,
   semanaDeLanzamiento,
   validarDefinicionMision,
+  type Grupo,
   type Hecho,
 } from "./mision";
 import type { Miembro, MisionDefinida } from "./tipos";
 import { MISIONES_REEMPLAZO } from "./xp-config";
 
+const grupo = (miembros: Miembro[]): Grupo => ({ miembros, lanzamientoEn: null });
+
 // Semana de lanzamiento: lunes 2026-09-28. Ana y Beto entran esa semana; Caro, el jueves 2026-10-08.
 const ana: Miembro = { id: "ana", nombre: "Ana", creadoEn: "2026-09-30T15:00:00Z" };
 const beto: Miembro = { id: "beto", nombre: "Beto", creadoEn: "2026-10-01T15:00:00Z" };
 const caro: Miembro = { id: "caro", nombre: "Caro", creadoEn: "2026-10-08T15:00:00Z" };
-const todos = [caro, beto, ana];
+const todos = grupo([caro, beto, ana]);
 
 describe("cero miembros", () => {
   it("no hay lanzamiento, capitán ni misión, y nadie puede definirla", () => {
-    expect(semanaDeLanzamiento([])).toBeNull();
-    expect(capitanDeSemana("2026-10-05", [])).toBeNull();
-    expect(misionDeSemana("2026-10-05", [], null)).toBeNull();
+    expect(semanaDeLanzamiento(grupo([]))).toBeNull();
+    expect(capitanDeSemana("2026-10-05", grupo([]))).toBeNull();
+    expect(misionDeSemana("2026-10-05", grupo([]), null)).toBeNull();
     const r = validarDefinicionMision(
       { accion: "probar", meta: 3 },
-      { semana: "2026-10-05", usuarioId: "ana", miembros: [], definida: null },
+      { semana: "2026-10-05", usuarioId: "ana", grupo: grupo([]), definida: null },
     );
     expect(r.ok).toBe(false);
   });
@@ -33,7 +36,7 @@ describe("cero miembros", () => {
 
 describe("un solo miembro", () => {
   it("la semana de lanzamiento tiene la misión fija y meta 2", () => {
-    expect(misionDeSemana("2026-09-28", [ana], null)).toEqual({
+    expect(misionDeSemana("2026-09-28", grupo([ana]), null)).toEqual({
       semana: "2026-09-28",
       accion: "publicar",
       meta: 2,
@@ -46,7 +49,7 @@ describe("un solo miembro", () => {
 
   it("desde la semana siguiente es capitán todas las semanas", () => {
     for (const semana of ["2026-10-05", "2026-10-12", "2026-10-19"]) {
-      expect(capitanDeSemana(semana, [ana])).toBe("ana");
+      expect(capitanDeSemana(semana, grupo([ana]))).toBe("ana");
     }
   });
 });
@@ -67,10 +70,10 @@ describe("capitán rotativo", () => {
   });
 
   it("quien entra a mitad de semana no cambia el capitán de esa semana", () => {
-    expect(capitanDeSemana("2026-10-05", [ana, beto])).toBe(capitanDeSemana("2026-10-05", todos));
+    expect(capitanDeSemana("2026-10-05", grupo([ana, beto]))).toBe(capitanDeSemana("2026-10-05", todos));
   });
 
-  it("antes del lanzamiento no hay misión", () => {
+  it("sin lanzamiento fijado, antes de que entre alguien no hay misión", () => {
     expect(misionDeSemana("2026-09-21", todos, null)).toBeNull();
   });
 });
@@ -122,7 +125,7 @@ describe("progreso automático", () => {
   });
 
   it("en el lanzamiento cada persona suma como máximo 2", () => {
-    const mision = misionDeSemana("2026-09-28", [ana, beto], null);
+    const mision = misionDeSemana("2026-09-28", grupo([ana, beto]), null);
     if (!mision) throw new Error("falta la misión");
     const hechos = [
       hecho("ana", "publicar", "2026-09-30T16:00:00Z"),
@@ -149,7 +152,7 @@ describe("progreso automático", () => {
 });
 
 describe("el capitán define la misión", () => {
-  const contexto = { semana: "2026-10-05", usuarioId: "ana", miembros: todos, definida: null };
+  const contexto = { semana: "2026-10-05", usuarioId: "ana", grupo: todos, definida: null };
 
   it("acepta acción y meta válidas (la meta puede venir como texto de un formulario)", () => {
     expect(validarDefinicionMision({ accion: "feedback", meta: "3" }, contexto)).toEqual({

@@ -13,16 +13,18 @@ function sinSupabase() {
 }
 
 describe("elección de la fuente de datos", () => {
-  it("el modo demostración se activa solo con HEROES_DEMO=1", () => {
-    expect(modoDemo({ HEROES_DEMO: "1" })).toBe(true);
-    for (const valor of [undefined, "", "0", "true", "si", " 1"]) {
-      expect(modoDemo({ HEROES_DEMO: valor })).toBe(false);
-    }
+  it("en la producción de Vercel ignora HEROES_DEMO=1 y exige Supabase", async () => {
+    sinSupabase();
+    vi.stubEnv("HEROES_DEMO", "1");
+    vi.stubEnv("VERCEL_ENV", "production");
+    expect(modoDemo()).toBe(false);
+    await expect(obtenerRepositorio(USUARIO_DEMO.id)).rejects.toBeInstanceOf(ErrorConfiguracion);
   });
 
   it("con HEROES_DEMO=1 usa los datos de ejemplo, sin Supabase", async () => {
     sinSupabase();
     vi.stubEnv("HEROES_DEMO", "1");
+    vi.stubEnv("VERCEL_ENV", "");
     const repo = await obtenerRepositorio(USUARIO_DEMO.id);
     expect((await repo.miembros()).some((m) => m.id === USUARIO_DEMO.id)).toBe(true);
   });

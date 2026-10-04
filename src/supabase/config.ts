@@ -2,8 +2,13 @@
 
 type Entorno = Readonly<Record<string, string | undefined>>;
 
-/** Modo demostración: datos de ejemplo en memoria, sin Supabase. Solo con HEROES_DEMO=1, nunca por defecto. */
+/**
+ * Modo demostración: datos de ejemplo en memoria, sin Supabase. Solo con HEROES_DEMO=1, nunca por defecto,
+ * y nunca en la producción de Vercel (VERCEL_ENV=production): ahí, una HEROES_DEMO cargada por error
+ * salteaba el login (D35). Es el único lugar del código que lee HEROES_DEMO.
+ */
 export function modoDemo(entorno: Entorno = process.env): boolean {
+  if (entorno.VERCEL_ENV === "production") return false;
   return entorno.HEROES_DEMO === "1";
 }
 

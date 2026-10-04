@@ -2,23 +2,10 @@ import type { PGlite } from "@electric-sql/pglite";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { capitanDeSemana } from "@/domain/mision";
 import { semanaDe, sumarDias } from "@/domain/tiempo";
-import type { Miembro } from "@/domain/tipos";
-import { ANA, BETO, CARO, como, crearBase, crearUsuario } from "./entorno";
+import { ANA, BETO, CARO, capitanSql, como, crearBase, crearUsuario, miembros } from "./entorno";
 
 const DANI = "00000000-0000-4000-8000-00000000000d";
 const EMI = "00000000-0000-4000-8000-00000000000e";
-
-async function miembros(db: PGlite): Promise<Miembro[]> {
-  const r = await db.query<{ id: string; nombre: string; created_at: Date }>(
-    "select id, nombre, created_at from public.perfiles",
-  );
-  return r.rows.map((m) => ({ id: m.id, nombre: m.nombre, creadoEn: m.created_at.toISOString() }));
-}
-
-async function capitanSql(db: PGlite, semana: string): Promise<string | null> {
-  const r = await db.query<{ capitan: string | null }>("select public.capitan_de($1::date) as capitan", [semana]);
-  return r.rows[0]?.capitan ?? null;
-}
 
 describe("la base calcula semana y capitán igual que el dominio", () => {
   let db: PGlite;
@@ -62,7 +49,7 @@ describe("la base calcula semana y capitán igual que el dominio", () => {
     const lista = await miembros(db);
     for (let k = -1; k <= 12; k++) {
       const semana = sumarDias("2026-09-28", 7 * k);
-      expect(await capitanSql(db, semana), semana).toBe(capitanDeSemana(semana, lista));
+      expect(await capitanSql(db, semana), semana).toBe(capitanDeSemana(semana, { miembros: lista, lanzamientoEn: null }));
     }
   });
 });
@@ -83,7 +70,7 @@ describe("misión definida por el capitán", () => {
 
   it("solo el capitán define la misión de la semana actual, con datos válidos y una sola vez", async () => {
     const semana = semanaDe(new Date());
-    const capitan = capitanDeSemana(semana, await miembros(db));
+    const capitan = capitanDeSemana(semana, { miembros: await miembros(db), lanzamientoEn: null });
     if (!capitan) throw new Error("tendría que haber capitán");
     expect(await capitanSql(db, semana)).toBe(capitan);
     const otro = [ANA, BETO, CARO].find((id) => id !== capitan) ?? ANA;

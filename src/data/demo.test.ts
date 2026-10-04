@@ -96,7 +96,7 @@ describe("escrituras con las mismas reglas que la base", () => {
 
   it("solo el capitán define la misión de la semana actual, una vez", async () => {
     const semana = semanaDe(AHORA);
-    const capitan = capitanDeSemana(semana, estado.miembros);
+    const capitan = capitanDeSemana(semana, { miembros: estado.miembros, lanzamientoEn: await repo().lanzamientoEn() });
     if (!capitan) throw new Error("tendría que haber capitán");
     const otro = estado.miembros.find((m) => m.id !== capitan)?.id ?? VOS;
     expect(await codigo(repo(otro).definirMision(semana, { accion: "leer", meta: 5 }))).toBe("no_permitido");
@@ -105,6 +105,15 @@ describe("escrituras con las mismas reglas que la base", () => {
     expect(await codigo(repo(capitan).definirMision(semana, { accion: "leer", meta: 5 }))).toBe("ok");
     expect(await repo().misionDefinida(semana)).toMatchObject({ accion: "leer", meta: 5, definidaPor: capitan });
     expect(await codigo(repo(capitan).definirMision(semana, { accion: "probar", meta: 2 }))).toBe("duplicado");
+  });
+
+  it("con lanzamiento_en en esta semana nadie define la misión: rige la inicial (D35)", async () => {
+    const semana = semanaDe(AHORA);
+    estado.lanzamientoEn = semana;
+    expect(await repo().lanzamientoEn()).toBe(semana);
+    for (const { id } of estado.miembros) {
+      expect(await codigo(repo(id).definirMision(semana, { accion: "leer", meta: 5 }))).toBe("no_permitido");
+    }
   });
 
   it("registra la entrada una vez por día de Buenos Aires", async () => {

@@ -36,6 +36,7 @@ describe("sin sesión no se ve nada", () => {
       como(db, null, "insert into public.aportes (tipo, link, titulo, por_que_sirve) values ('skill', 'https://a.com', 't', 'p')"),
     ).rejects.toThrow(/permission denied/);
     await expect(como(db, null, "select public.capitan_de(current_date)")).rejects.toThrow(/permission denied/);
+    await expect(como(db, null, "select public.semana_de_lanzamiento()")).rejects.toThrow(/permission denied/);
   });
 });
 

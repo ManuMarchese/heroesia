@@ -3,9 +3,12 @@
 -- solo el autor de un proyecto marca un feedback como útil. La app no usa la clave secreta.
 
 -- 1. Configuración mínima: una sola fila. La zona es la de ZONA_HORARIA en src/domain/xp-config.ts.
+-- lanzamiento_en: el lunes en que Manu quiere que arranque la misión inicial (lo fija con SQL, ver
+-- docs/SETUP-MANU.md). Si queda vacío, la semana de lanzamiento es la del primer perfil.
 create table public.configuracion (
   id boolean primary key default true check (id),
-  zona_horaria text not null default 'America/Argentina/Buenos_Aires'
+  zona_horaria text not null default 'America/Argentina/Buenos_Aires',
+  lanzamiento_en date
 );
 insert into public.configuracion default values;
 
@@ -93,12 +96,23 @@ language sql stable set search_path = '' as $$
   select date_trunc('week', instante at time zone (select c.zona_horaria from public.configuracion c))::date
 $$;
 
+-- Semana de lanzamiento: el lunes de lanzamiento_en si Manu lo fijó; si no, la semana del primer
+-- perfil. Hasta esa semana incluida rige la misión inicial. Igual que semanaDeLanzamiento() en
+-- src/domain/mision.ts.
+create function public.semana_de_lanzamiento() returns date
+language sql stable set search_path = '' as $$
+  select coalesce(
+    (select c.lanzamiento_en - (extract(isodow from c.lanzamiento_en)::integer - 1) from public.configuracion c),
+    (select public.semana_de(min(p.created_at)) from public.perfiles p)
+  )
+$$;
+
 -- Capitán de una semana: rota por orden de ingreso desde la semana siguiente al lanzamiento y solo
 -- cuentan quienes entraron antes de esa semana. Igual que capitanDeSemana() en src/domain/mision.ts.
 create function public.capitan_de(semana date) returns uuid
 language sql stable set search_path = '' as $$
   with lanzamiento as (
-    select public.semana_de(min(p.created_at)) as semana from public.perfiles p
+    select public.semana_de_lanzamiento() as semana
   ), elegibles as (
     select p.id, row_number() over (order by p.created_at, p.id) - 1 as posicion
     from public.perfiles p
@@ -161,8 +175,10 @@ create trigger xp_por_feedback_util after insert on public.feedback_util
 
 revoke all on function public.crear_perfil(), public.xp_por_aporte(), public.xp_por_accion(),
   public.xp_por_feedback_util() from public, anon, authenticated;
-revoke all on function public.semana_de(timestamptz), public.capitan_de(date) from public, anon;
-grant execute on function public.semana_de(timestamptz), public.capitan_de(date) to authenticated;
+revoke all on function public.semana_de(timestamptz), public.semana_de_lanzamiento(), public.capitan_de(date)
+  from public, anon;
+grant execute on function public.semana_de(timestamptz), public.semana_de_lanzamiento(), public.capitan_de(date)
+  to authenticated;
 
 -- Permisos por columna: nadie elige su autor, sus fechas ni el XP de otro.
 revoke all on table public.configuracion, public.perfiles, public.aportes, public.acciones,

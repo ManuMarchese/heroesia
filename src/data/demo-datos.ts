@@ -1,6 +1,6 @@
 // Datos de ejemplo del modo demostración (HEROES_DEMO=1). Personas y aportes inventados.
 import { diaLocal } from "@/domain/tiempo";
-import type { Accion, Aporte, EventoXp, Miembro, MisionDefinida, TipoAporte } from "@/domain/tipos";
+import type { Accion, Aporte, Dia, EventoXp, Miembro, MisionDefinida, TipoAporte } from "@/domain/tipos";
 import { motivoDeAccion } from "@/domain/xp";
 
 export const USUARIO_DEMO = { id: "demo-vos", email: "demo@heroes.invalid", nombre: "Héroe demo" } as const;
@@ -10,6 +10,8 @@ export type EventoDemo = EventoXp & { aporteId: string | null };
 
 export interface EstadoDemo {
   miembros: Miembro[];
+  /** Como configuracion.lanzamiento_en: null = la semana del primer perfil. */
+  lanzamientoEn: Dia | null;
   aportes: Aporte[];
   acciones: Accion[];
   eventos: EventoDemo[];
@@ -129,7 +131,7 @@ export function crearEstadoDemo(ahora: Date): EstadoDemo {
     accion("demo-c10", "demo-a9", "demo-sofi", "feedback", hace(21), { texto: "Sumale un resumen de una línea." }),
   ];
 
-  const estado: EstadoDemo = { miembros, aportes, acciones, eventos: [], misiones: [], secuencia: 0 };
+  const estado: EstadoDemo = { miembros, lanzamientoEn: null, aportes, acciones, eventos: [], misiones: [], secuencia: 0 };
   for (const a of aportes) eventosPorAporte(estado, a);
   for (const c of acciones) eventosPorAccion(estado, c, aportes.find((a) => a.id === c.aporteId)?.tipo ?? "skill");
   for (const id of ["demo-c9", "demo-c10"]) {

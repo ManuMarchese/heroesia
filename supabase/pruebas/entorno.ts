@@ -72,6 +72,19 @@ export async function crearUsuario(
   }
 }
 
+/** Los perfiles como miembros del dominio, para cruzar la base contra src/domain. */
+export async function miembros(db: PGlite): Promise<{ id: string; nombre: string; creadoEn: string }[]> {
+  const r = await db.query<{ id: string; nombre: string; created_at: Date }>(
+    "select id, nombre, created_at from public.perfiles",
+  );
+  return r.rows.map((m) => ({ id: m.id, nombre: m.nombre, creadoEn: m.created_at.toISOString() }));
+}
+
+export async function capitanSql(db: PGlite, semana: string): Promise<string | null> {
+  const r = await db.query<{ capitan: string | null }>("select public.capitan_de($1::date) as capitan", [semana]);
+  return r.rows[0]?.capitan ?? null;
+}
+
 /** Inserta un aporte como su autor y devuelve el id. */
 export async function publicar(db: PGlite, uid: string, campos: Record<string, unknown>): Promise<string> {
   const columnas = Object.keys(campos);

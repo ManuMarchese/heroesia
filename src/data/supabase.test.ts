@@ -98,6 +98,19 @@ describe("repositorio de Supabase (con cliente falso)", () => {
     await expect(repo.marcarUtil("c1")).rejects.toMatchObject({ codigo: "duplicado" });
   });
 
+  it("lee lanzamiento_en de la configuración (o null si Manu no lo fijó)", async () => {
+    const { cliente, cadenas } = clienteFalso({
+      configuracion: [
+        { data: { lanzamiento_en: "2026-10-05" }, error: null },
+        { data: { lanzamiento_en: null }, error: null },
+      ],
+    });
+    const repo = crearRepositorioSupabase(cliente, "ana");
+    expect(await repo.lanzamientoEn()).toBe("2026-10-05");
+    expect(await repo.lanzamientoEn()).toBeNull();
+    expect(cadenas[0]).toBe('configuracion.select(["lanzamiento_en"]).maybeSingle([])');
+  });
+
   it("aporte inexistente devuelve null", async () => {
     const { cliente } = clienteFalso({ aportes: [{ data: null, error: null }] });
     expect(await crearRepositorioSupabase(cliente, "ana").aporte("x")).toBeNull();

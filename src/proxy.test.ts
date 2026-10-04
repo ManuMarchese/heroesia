@@ -61,6 +61,13 @@ describe("proxy", () => {
     expect(r.headers.get("cache-control")).toBe("private, no-store");
   });
 
+  it("en la producción de Vercel exige sesión aunque HEROES_DEMO=1 esté cargada (D35)", async () => {
+    sinSesion();
+    vi.stubEnv("HEROES_DEMO", "1");
+    vi.stubEnv("VERCEL_ENV", "production");
+    expect(getRedirectUrl(await proxy(pedido("/perfil")))).toBe("https://heroes.example.com/entrar?next=%2Fperfil");
+  });
+
   it("en modo demostración o sin Supabase configurado no consulta nada", async () => {
     vi.stubEnv("HEROES_DEMO", "1");
     expect(sigue(await proxy(pedido("/perfil")))).toBe(true);
@@ -70,10 +77,17 @@ describe("proxy", () => {
     expect(getClaims).not.toHaveBeenCalled();
   });
 
-  it("no corre en archivos estáticos, íconos ni manifest; sí en las páginas", () => {
+  it("no corre en archivos estáticos, íconos, manifest ni licencias; sí en las páginas", () => {
     const corre = (url: string) => unstable_doesMiddlewareMatch({ config, url });
     for (const url of ["/", "/perfil", "/entrar", "/auth/confirm"]) expect(corre(url), url).toBe(true);
-    for (const url of ["/_next/static/chunks/a.js", "/manifest.webmanifest", "/icons/icon-192.png", "/apple-icon.png", "/icon.svg"]) {
+    for (const url of [
+      "/_next/static/chunks/a.js",
+      "/manifest.webmanifest",
+      "/icons/icon-192.png",
+      "/apple-icon.png",
+      "/icon.svg",
+      "/licencias/Nunito-OFL.txt",
+    ]) {
       expect(corre(url), url).toBe(false);
     }
   });

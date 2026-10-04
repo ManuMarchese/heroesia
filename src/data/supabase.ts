@@ -88,6 +88,12 @@ export function crearRepositorioSupabase(
       return filas.map((f): Miembro => ({ id: f.id, nombre: f.nombre, creadoEn: f.created_at }));
     },
 
+    async lanzamientoEn() {
+      const r = await cliente.from("configuracion").select("lanzamiento_en").maybeSingle<{ lanzamiento_en: string | null }>();
+      if (r.error) throw traducirErrorPostgres(r.error);
+      return r.data?.lanzamiento_en ?? null;
+    },
+
     async aportes(filtro: FiltroAportes = {}) {
       let consulta = cliente.from("aportes").select("*");
       if (filtro.tipo) consulta = consulta.eq("tipo", filtro.tipo);

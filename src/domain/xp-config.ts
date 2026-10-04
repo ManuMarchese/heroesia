@@ -54,7 +54,7 @@ export const CLASE_POR_TIPO: Record<TipoAporte, Clase> = {
 /** Si dos clases empatan en XP, gana la primera de esta lista. */
 export const ORDEN_CLASES_EMPATE: readonly Clase[] = ["builder", "mentor", "curador", "scout"];
 
-/** Semana de lanzamiento (D24): misión fija, sin capitán. */
+/** Misión inicial (D24): rige hasta la semana de lanzamiento incluida (D35), sin capitán. */
 export const MISION_LANZAMIENTO = {
   accion: "publicar",
   porMiembro: 2,

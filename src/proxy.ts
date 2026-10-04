@@ -45,6 +45,7 @@ export async function proxy(pedido: NextRequest) {
   return redireccion;
 }
 
+// Las licencias de las fuentes quedan públicas, igual que las fuentes que usa /entrar.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon.png|manifest.webmanifest|icons/).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon.png|manifest.webmanifest|icons/|licencias/).*)"],
 };

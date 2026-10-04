@@ -34,6 +34,14 @@ describe("sesión del servidor", () => {
     expect(getClaims).not.toHaveBeenCalled();
   });
 
+  it("en la producción de Vercel, HEROES_DEMO=1 no saltea el login (D35)", async () => {
+    configurar({ demo: true });
+    vi.stubEnv("VERCEL_ENV", "production");
+    getClaims.mockResolvedValue({ data: null, error: null });
+    await expect(requireUser()).rejects.toThrow("REDIRECT /entrar");
+    expect(getClaims).toHaveBeenCalled();
+  });
+
   it("con una sesión válida devuelve el id y el email de los claims", async () => {
     configurar();
     getClaims.mockResolvedValue({ data: { claims: { sub: "u-1", email: "ana@example.com" } }, error: null });

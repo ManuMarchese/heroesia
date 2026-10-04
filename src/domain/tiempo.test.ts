@@ -6,6 +6,7 @@ import {
   diasEntre,
   diasQueFaltan,
   esDiaValido,
+  lunesDe,
   semanaDe,
   semanasEntre,
   sumarDias,
@@ -50,6 +51,13 @@ describe("días y semanas en hora de Buenos Aires", () => {
   it("numera los días de lunes (0) a domingo (6)", () => {
     expect(diaDeSemana("2026-10-05")).toBe(0);
     expect(diaDeSemana("2026-10-04")).toBe(6);
+  });
+
+  it("el lunes de un día es la clave de su semana", () => {
+    expect(lunesDe("2026-10-05")).toBe("2026-10-05");
+    expect(lunesDe("2026-10-04")).toBe("2026-09-28");
+    expect(lunesDe("2026-10-08")).toBe("2026-10-05");
+    expect(lunesDe("2027-01-01")).toBe("2026-12-28");
   });
 
   it("cuenta semanas y días que faltan", () => {

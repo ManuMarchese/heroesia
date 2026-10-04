@@ -63,10 +63,14 @@ export function diaDeSemana(dia: Dia): number {
   return (new Date(utcDeDia(dia)).getUTCDay() + 6) % 7;
 }
 
+/** El lunes de la semana de un día local (la clave de esa semana). */
+export function lunesDe(dia: Dia): Dia {
+  return sumarDias(dia, -diaDeSemana(dia));
+}
+
 /** Clave de la semana (su lunes) a la que pertenece un instante. La semana va de lunes a domingo. */
 export function semanaDe(instante: Date | FechaIso, zona: string = ZONA_HORARIA): Dia {
-  const dia = diaLocal(instante, zona);
-  return sumarDias(dia, -diaDeSemana(dia));
+  return lunesDe(diaLocal(instante, zona));
 }
 
 /** Semanas entre dos claves de semana (b − a). */

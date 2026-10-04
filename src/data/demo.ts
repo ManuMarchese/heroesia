@@ -46,6 +46,10 @@ export function crearRepositorioDemo(
       return ordenDeIngreso(estado.miembros).map((m) => ({ ...m }));
     },
 
+    async lanzamientoEn() {
+      return estado.lanzamientoEn;
+    },
+
     async aportes(filtro = {}) {
       return estado.aportes
         .filter((a) => !filtro.tipo || a.tipo === filtro.tipo)
@@ -120,7 +124,8 @@ export function crearRepositorioDemo(
 
     async definirMision(semana, { accion, meta }) {
       const ahora = reloj();
-      if (semana !== semanaDe(ahora) || capitanDeSemana(semana, estado.miembros) !== usuarioId) {
+      const grupo = { miembros: estado.miembros, lanzamientoEn: estado.lanzamientoEn };
+      if (semana !== semanaDe(ahora) || capitanDeSemana(semana, grupo) !== usuarioId) {
         throw new ErrorDatos("no_permitido", "Solo el capitán de la semana define la misión.");
       }
       if (estado.misiones.some((m) => m.semana === semana)) throw new ErrorDatos("duplicado");

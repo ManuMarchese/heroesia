@@ -1,5 +1,5 @@
-// Misión semanal del equipo (U6, D23, D24): capitán rotativo, reemplazo y progreso automático.
-import { aFecha, semanaDe, semanasEntre } from "./tiempo";
+// Misión semanal del equipo (U6, D23, D24, D35): capitán rotativo, reemplazo, lanzamiento y progreso automático.
+import { aFecha, lunesDe, semanaDe, semanasEntre } from "./tiempo";
 import {
   ACCIONES_MISION,
   type Accion,
@@ -33,6 +33,12 @@ export interface Mision {
   topePorMiembro: number | null;
 }
 
+/** Quiénes son y qué día fijó Manu para lanzar (configuracion.lanzamiento_en; null si no lo fijó). */
+export interface Grupo {
+  miembros: readonly Miembro[];
+  lanzamientoEn: Dia | null;
+}
+
 /** Orden de ingreso: fecha de creación del perfil y, si empatan, el id. */
 export function ordenDeIngreso(miembros: readonly Miembro[]): Miembro[] {
   return [...miembros].sort(
@@ -40,9 +46,13 @@ export function ordenDeIngreso(miembros: readonly Miembro[]): Miembro[] {
   );
 }
 
-/** La semana en que se creó el primer perfil. Sin miembros no hay lanzamiento. */
-export function semanaDeLanzamiento(miembros: readonly Miembro[], zona: string = ZONA_HORARIA): Dia | null {
-  const primero = ordenDeIngreso(miembros)[0];
+/**
+ * Semana de lanzamiento: la de lanzamientoEn si Manu lo fijó; si no, la del primer perfil.
+ * Sin fecha fijada y sin miembros no hay lanzamiento. Igual que semana_de_lanzamiento() en la migración.
+ */
+export function semanaDeLanzamiento(grupo: Grupo, zona: string = ZONA_HORARIA): Dia | null {
+  if (grupo.lanzamientoEn !== null) return lunesDe(grupo.lanzamientoEn);
+  const primero = ordenDeIngreso(grupo.miembros)[0];
   return primero ? semanaDe(primero.creadoEn, zona) : null;
 }
 
@@ -50,12 +60,12 @@ export function semanaDeLanzamiento(miembros: readonly Miembro[], zona: string =
  * Capitán de una semana: rota por orden de ingreso desde la semana siguiente al lanzamiento.
  * Solo cuentan quienes entraron antes de esa semana, así nadie cambia el capitán a mitad de semana.
  */
-export function capitanDeSemana(semana: Dia, miembros: readonly Miembro[], zona: string = ZONA_HORARIA): string | null {
-  const lanzamiento = semanaDeLanzamiento(miembros, zona);
+export function capitanDeSemana(semana: Dia, grupo: Grupo, zona: string = ZONA_HORARIA): string | null {
+  const lanzamiento = semanaDeLanzamiento(grupo, zona);
   if (lanzamiento === null) return null;
   const numero = semanasEntre(lanzamiento, semana);
   if (numero < 1) return null;
-  const elegibles = ordenDeIngreso(miembros).filter((m) => semanaDe(m.creadoEn, zona) < semana);
+  const elegibles = ordenDeIngreso(grupo.miembros).filter((m) => semanaDe(m.creadoEn, zona) < semana);
   if (elegibles.length === 0) return null;
   return elegibles[(numero - 1) % elegibles.length]?.id ?? null;
 }
@@ -74,18 +84,22 @@ export function tituloMision(accion: AccionMision, meta: number): string {
   }
 }
 
-/** La misión que rige en una semana. Antes del lanzamiento (o sin miembros) no hay misión. */
+/**
+ * La misión que rige en una semana. Hasta la semana de lanzamiento incluida rige la misión inicial
+ * (también antes, si el lanzamiento fijado todavía no llegó); sin nadie anotado esa semana, no hay misión.
+ */
 export function misionDeSemana(
   semana: Dia,
-  miembros: readonly Miembro[],
+  grupo: Grupo,
   definida: MisionDefinida | null,
   zona: string = ZONA_HORARIA,
 ): Mision | null {
-  const lanzamiento = semanaDeLanzamiento(miembros, zona);
-  if (lanzamiento === null || semana < lanzamiento) return null;
+  const lanzamiento = semanaDeLanzamiento(grupo, zona);
+  if (lanzamiento === null) return null;
 
-  if (semana === lanzamiento) {
-    const cantidad = miembros.filter((m) => semanaDe(m.creadoEn, zona) <= semana).length;
+  if (semana <= lanzamiento) {
+    const cantidad = grupo.miembros.filter((m) => semanaDe(m.creadoEn, zona) <= semana).length;
+    if (cantidad === 0) return null;
     return {
       semana,
       accion: MISION_LANZAMIENTO.accion,
@@ -97,7 +111,7 @@ export function misionDeSemana(
     };
   }
 
-  const capitanId = capitanDeSemana(semana, miembros, zona);
+  const capitanId = capitanDeSemana(semana, grupo, zona);
   if (definida && definida.semana === semana) {
     const { accion, meta } = definida;
     return { semana, accion, meta, titulo: tituloMision(accion, meta), origen: "capitan", capitanId, topePorMiembro: null };
@@ -163,13 +177,14 @@ const fallo = (campo: string, mensaje: string): Resultado<never> => ({ ok: false
 /** El capitán define la misión de su semana una sola vez (la base también lo exige). */
 export function validarDefinicionMision(
   entrada: { accion: string; meta: unknown },
-  contexto: { semana: Dia; usuarioId: string; miembros: readonly Miembro[]; definida: MisionDefinida | null },
+  contexto: { semana: Dia; usuarioId: string; grupo: Grupo; definida: MisionDefinida | null },
   zona: string = ZONA_HORARIA,
 ): Resultado<{ accion: AccionMision; meta: number }> {
-  const { semana, usuarioId, miembros, definida } = contexto;
-  if (semana === semanaDeLanzamiento(miembros, zona))
-    return fallo("mision", "En la semana de lanzamiento rige la misión inicial.");
-  if (capitanDeSemana(semana, miembros, zona) !== usuarioId)
+  const { semana, usuarioId, grupo, definida } = contexto;
+  const lanzamiento = semanaDeLanzamiento(grupo, zona);
+  if (lanzamiento !== null && semana <= lanzamiento)
+    return fallo("mision", "Hasta la semana de lanzamiento rige la misión inicial.");
+  if (capitanDeSemana(semana, grupo, zona) !== usuarioId)
     return fallo("mision", "Solo el capitán de la semana define la misión.");
   if (definida?.semana === semana) return fallo("mision", "La misión de esta semana ya está definida.");
 
