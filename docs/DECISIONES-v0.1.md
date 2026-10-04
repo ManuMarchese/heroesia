@@ -220,3 +220,14 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Quién:** orquestador, dentro de lo aprobado (D21, D25). Precisa D23 (reglas 3 y 5) sin reemplazarlo.
 - **Por qué:** son hallazgos de mi revisión de la pasada 1; el de la semana de lanzamiento afecta el día 1 de D24.
 - **Nota:** el orden de capitanes es el orden de invitación (el perfil se crea al invitar), no el del primer ingreso; va a la guía de Manu.
+
+## Etapa 3: Builder, pasada 2 (2026-10-04)
+
+### D36. Pasada 2 del Builder verificada
+- **Qué:** los commits `7e193fe` (ajuste de D35), `0a15e4f` (paso 5), `f7cbf70` (paso 6), `fa5b924` (paso 7) y `dcba8f6` (paso 8) quedaron verificados por el orquestador y se suben a la rama de trabajo.
+- **Quién:** orquestador.
+- **Evidencia:** `git status` limpio; los 5 mensajes llevan los trailers y no nombran ningún modelo; ningún archivo propio pasa de 250 líneas (la migración tiene 248); no hay `AGENTS.md` ni `CLAUDE.md` generados; el único archivo de entorno versionado es `.env.example`; no hay claves secretas fuera de pruebas y docs; `HEROES_DEMO` se lee solo en `src/supabase/config.ts` y se ignora con `VERCEL_ENV=production`. `verificar-copia-limpia.sh` sobre `dcba8f6`: `RESULTADO: PASS en copia limpia` (npm ci, typecheck, lint, 36 archivos y 386 tests, build). `npm run humo` en una copia limpia mía: 10 de 10, exit 0, y regeneró las 8 capturas de `docs/capturas/` con el mismo tamaño en bytes que las del repo. Leí `src/lectura/` (ip, url, pedir, transporte, leer-link, github), las Server Actions (todas empiezan con `requireUser()`), el diff de SQL de `lanzamiento_en` y `semana_de_lanzamiento()`, `SETUP-MANU.md`, `CHECKLIST-MANUAL-v0.1.md` y 7 de las 8 capturas: no vi fallas de seguridad en esa lectura.
+- **Librería:** `playwright-core` 1.56.1 (solo desarrollo, Apache-2.0) para el humo: aceptada.
+- **Decisiones del Builder que acepto (a confirmar por Manu, listadas al final de `CHECKLIST-MANUAL-v0.1.md`):** no se leen X ni LinkedIn; solo puertos 80 y 443; plazo de 8 s y 1 MB; en GitHub el título es "dueño/repo: descripción"; Lo nuevo muestra 8 aportes y Explorar arranca en Skill; chips Noticia blanco y Proyecto rosa.
+- **Pendientes y observaciones:** (1) `next dev` crea solo `AGENTS.md` y `CLAUDE.md` al detectar un agente; el Builder los borró. Decidir en el cierre si se versiona un `CLAUDE.md` propio. (2) La migración llegó a 248 de 250 líneas: lo que se sume va en una `0002`. (3) "Me interesa" sigue disponible en oportunidades vencidas. (4) "Salir" no se ve en modo demostración: va al checklist. (5) Las imágenes de terceros solo se muestran en la vista previa de Publicar, con `referrerPolicy="no-referrer"`. (6) No hay cabeceras de seguridad en `next.config.ts` (solo `poweredByHeader: false`): mejora opcional.
+- **Límite:** nada se probó contra un Supabase real ni con sitios reales (la red del entorno los bloquea): **NO VERIFICADO**, va al checklist de Manu.
