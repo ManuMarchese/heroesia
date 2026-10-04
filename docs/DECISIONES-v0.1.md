@@ -192,3 +192,15 @@ Una entrada por decisión. Solo se agregan entradas: las viejas no se reescriben
 - **Qué:** tras el push de `33c18c3`, `git ls-remote origin` mostró `HEAD` en `33c18c3` (igual que la rama de trabajo) y `main` en `40ad754`. Entonces la rama por defecto en GitHub es la de trabajo, no `main`. Corrige la nota "NO VERIFICADO" de D26, que queda como historial.
 - **Quién:** orquestador.
 - **Evidencia:** salida de `git ls-remote origin` del 2026-10-04.
+
+### D32. Acceso: se mantiene D22; Supabase y Vercel se configuran antes de invitar
+- **Qué:** Manu no eligió ninguna de las 3 opciones y respondió con texto libre: "Antes de darselo ya si ponemos supabase y vercel. Deja solo eso sin hacer". Interpretación del orquestador, **a confirmar**: D22 se mantiene (link mágico por email); la configuración real de Supabase (incluido el SMTP propio y el dominio) y de Vercel la hace Manu antes de dárselo a los amigos, y queda sin hacer en esta sesión (coherente con D16 y D18). Se levanta la parada de D30 y arranca el Builder.
+- **Quién:** [Manu, 2026-10-04] (texto citado) y orquestador (interpretación).
+- **Por qué:** la meta es hoy (D19) y el SMTP, el dominio y la cuenta de email son pasos de Manu en Desktop.
+- **Decisiones técnicas derivadas (orquestador, a confirmar en el checklist):** (1) entrada con `signInWithOtp`: el usuario abre el link o escribe el código de 6 dígitos, porque en iPhone el link del mail abre Safari y no la app instalada (Q6); (2) quién puede entrar: registros públicos apagados y Manu invita desde el panel de Supabase (opción A de Q8: más simple que un hook o un código); la app muestra un mensaje claro si el email no está invitado; (3) la app no usa la clave secreta de Supabase; (4) hasta que Manu configure Supabase, la app corre en modo demostración (`HEROES_DEMO=1`, solo para pruebas locales, nunca por defecto).
+- **Costo / riesgo asumido:** si "eso" era el login (dejarlo sin hacer), el Builder construye una parte que Manu no quería. Por eso el acceso va aislado en un módulo (`src/auth/`) y es fácil de quitar. Antes de invitar a los amigos, Manu tiene que hacer estos pasos (van al checklist): SMTP propio con dominio verificado, apagar los registros públicos, invitar a cada amigo, aplicar el SQL y cargar las variables en Vercel.
+
+### D33. Builder en 2 pasadas, como agente genérico
+- **Qué:** el Builder corre como agente genérico (Opus) con el cuerpo de la plantilla pegado como prompt, en 2 pasadas de 4 pasos cada una (8 commits, ver PLAN sección 4). Hace commits locales; el orquestador verifica y hace el `git push` a la rama de trabajo. Sin marca de skip de hosting: no hay una nativa verificada (Q3) y el repo no está conectado a Vercel (**NO VERIFICADO**). No se pudo cargar la definición ni fijar el `effort`.
+- **Quién:** orquestador, dentro de lo aprobado en D21 y D25.
+- **Por qué:** una sola pasada con 8 pasos arriesga quedarse sin contexto; dos pasadas permiten verificar en el medio.

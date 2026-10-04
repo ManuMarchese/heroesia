@@ -22,7 +22,7 @@ Repo vacío: no hay `archivo:línea`; la fuente de cada ítem es la decisión.
 | ID | Pedido | Fuente |
 |---|---|---|
 | B1 | Web para celular, instalable, con el look A como variables CSS | D11, D15 |
-| B2 | Login privado con Supabase por link mágico por email. Quién puede entrar: código de invitación compartido por defecto, a confirmar con Q8 | D22 |
+| B2 | Login privado con Supabase por link mágico por email o código de 6 dígitos. Quién puede entrar: registros públicos apagados; vos invitás desde el panel de Supabase | D22, D32 |
 | B3 | Datos: una base común + 5 plantillas (Skill, Repo, Noticia, Oportunidad, Proyecto), con reglas de acceso dentro de la base (RLS) | D5 |
 | B4 | XP y niveles: puntos y topes diarios en un solo archivo de configuración | D7 |
 | U1 | Pantalla "Base del héroe": tu nivel y XP, tu récord personal, misión del equipo y "Lo nuevo" | D8, D12 |
@@ -71,11 +71,15 @@ Repo vacío: no hay `archivo:línea`; la fuente de cada ítem es la decisión.
 - Q7. Licencia de las fuentes Lilita One y Nunito, y cómo cargarlas.
 - Q8. Cómo restringir el registro a invitados cuando se entra por link mágico (código de invitación, lista de emails permitidos, hooks de Auth) y cuál es compatible con el plan gratis.
 
+**Pasos del Builder (8 commits, 2 pasadas, D33):**
+- Pasada 1: 1 Proyecto base y tokens (B1) · 2 Reglas puras con tests: tipos, XP, niveles, misión, resumen (B4, U6, U7) · 3 Datos: SQL, capa de acceso y modo demostración (B3) · 4 Acceso (B2).
+- Pasada 2: 5 Pantallas: Base del héroe, Explorar, Perfil (U1, U4, U5, S1) · 6 Publicar con lectura segura de links (U2) · 7 Acciones, XP, misión semanal y resumen (U3, U6, U7) · 8 Verificación en Chromium, checklist manual y guía de configuración.
+
 **Posturas de planeadores:** no aplican en M (D20).
 
 ## 5. Riesgos
 - Arranque en frío (app vacío, actividad cero, D24) → misión inicial, estados vacíos con llamado a la acción y, si querés, contenido semilla.
-- Link mágico: el email no llega o el plan gratis limita los envíos (D22) → Q1 es bloqueante; plan B: servicio de email propio (gasto que decidís vos) o email y clave.
+- Link mágico: con el email por defecto de Supabase no le llega a tus amigos (Q1, D30) → antes de invitar configurás un SMTP propio con dominio verificado (D32); plan B: email y clave o links por WhatsApp.
 - Capitán rotativo: la semana queda sin misión (D23) → misión de reemplazo automática.
 - Sin avisos (D10) → botón "Copiar resumen semanal" (D14) y que lo postees en el grupo.
 - "Hoy" empuja a recortar pruebas → Guardián independiente del Builder y checklist manual; lo no verificado se declara.
@@ -88,7 +92,7 @@ Repo vacío: no hay `archivo:línea`; la fuente de cada ítem es la decisión.
 - El alcance crece → todo lo que no esté en este plan va a "después".
 
 ## 6. Dudas (estado al 2026-10-03)
-1. **Acceso:** resuelta, link mágico por email (D22). Queda cómo se controla quién entra: código por defecto, a confirmar con Q8.
+1. **Acceso:** resuelta, link mágico por email o código (D22, D32). Quién entra: registros apagados e invitación desde el panel de Supabase. Antes de invitar configurás el SMTP propio. A confirmar: tu respuesta de D32.
 2. **Misión semanal:** resuelta, capitán rotativo (D23), con reglas por defecto.
 3. **Arranque en frío:** resuelta, misión inicial sin contenido semilla (D24).
 4. **Tamaño:** resuelta, M (D21).
