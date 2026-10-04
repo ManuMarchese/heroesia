@@ -1,0 +1,29 @@
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--alto-boton);
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--amarillo);
+  color: var(--tinta);
+  border: var(--borde);
+  border-radius: 12px;
+  box-shadow: var(--sombra-boton);
+}
+
+.texto {
+  font-family: var(--fuente-display);
+  font-size: var(--tam-marca);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--amarillo);
+  text-shadow: var(--sombra-texto);
+}

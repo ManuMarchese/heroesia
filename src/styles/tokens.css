@@ -1,0 +1,65 @@
+/*
+ * Tokens del look A · Cómic (D15). Fuente: docs/diseno/TOKENS.md.
+ * Todos los valores de diseño viven acá para poder suavizar el look sin rehacer pantallas.
+ */
+:root {
+  /* Colores */
+  --azul-heroe: #2a3fe8;
+  --tinta: #111111;
+  --amarillo: #ffd60a;
+  --rosa: #ff4fa3;
+  --menta: #19c37d;
+  --rojo: #d92d20;
+  --blanco: #ffffff;
+  --gris-texto: #4b5563;
+
+  /* Tipografía: las variables --font-* las define next/font en el layout */
+  --fuente-display: var(--font-lilita), var(--font-nunito), system-ui, sans-serif;
+  --fuente-texto: var(--font-nunito), system-ui, sans-serif;
+  --tam-marca: 28px;
+  --tam-nivel: 38px;
+  --tam-clase: 24px;
+  --tam-titulo-mision: 24px;
+  --tam-progreso-mision: 22px;
+  --tam-titulo-seccion: 26px;
+  --tam-titulo-tarjeta: 17px;
+  --linea-titulo-tarjeta: 22px;
+  --tam-meta: 13px;
+  --tam-chip: 12px;
+  --tam-boton: 14px;
+  --tam-nav: 12px;
+  --peso-semi: 600;
+  --peso-negrita: 700;
+  --peso-extra: 800;
+  --espaciado-chip: 1px;
+
+  /* Formas */
+  --grosor-borde: 3px;
+  --borde: var(--grosor-borde) solid var(--tinta);
+  --radio-panel: 18px;
+  --sombra-panel: 5px 5px 0 var(--tinta);
+  --padding-panel: 16px;
+  --padding-tarjeta: 14px 16px;
+  --radio-chip: 8px;
+  --linea-chip: 20px;
+  --alto-boton: 44px;
+  --radio-pastilla: 999px;
+  --sombra-boton: 3px 3px 0 var(--tinta);
+  --alto-barra-xp: 22px;
+  --alto-segmento: 24px;
+  --radio-segmento: 8px;
+  --tam-avatar: 34px;
+  --solape-avatar: -8px;
+  --sombra-texto: 2px 2px 0 var(--tinta);
+
+  /* Navegación inferior */
+  --alto-nav: 84px;
+  --tam-boton-mas: 56px;
+  --tam-icono: 24px;
+
+  /* Pantalla: diseño a 390px; en pantallas anchas, columna centrada */
+  --padding-pantalla: 16px;
+  --separacion: 16px;
+  --ancho-diseno: 390px;
+  --ancho-max: 480px;
+}
