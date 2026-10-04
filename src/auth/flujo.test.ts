@@ -23,13 +23,15 @@ describe("pedir el código", () => {
     expect(llamadas).toEqual([]);
   });
 
-  it("si el email no está invitado, dice que le pida a Manu que lo invite", async () => {
+  it("un solo mensaje cubre al no invitado y al invitado que todavía no abrió su mail", async () => {
+    expect(MENSAJES_ACCESO.noInvitado).toBe("No encontramos una cuenta activa con ese email. Si ya te invitaron, abrí el mail de invitación y tocá su link; si no, pedile a Manu que te invite.");
+    expect(mensajeErrorEnvio({ code: "signup_disabled" })).toBe("No encontramos una cuenta activa con ese email. Si ya te invitaron, abrí el mail de invitación y tocá su link; si no, pedile a Manu que te invite.");
     for (const error of [ERRORES.noInvitado, ERRORES.soloMensaje]) {
       const { cliente } = clienteFalso({ envio: error });
       expect(await pedirCodigo(cliente, "nuevo@example.com", CONFIRMAR)).toEqual({
         ok: false,
         email: "nuevo@example.com",
-        error: "Ese email no está invitado. Pedile a Manu que te invite.",
+        error: MENSAJES_ACCESO.noInvitado,
       });
     }
   });

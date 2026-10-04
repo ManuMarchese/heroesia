@@ -8,7 +8,8 @@ export interface ErrorAuth {
 }
 
 export const MENSAJES_ACCESO = {
-  noInvitado: "Ese email no está invitado. Pedile a Manu que te invite.",
+  noInvitado:
+    "No encontramos una cuenta activa con ese email. Si ya te invitaron, abrí el mail de invitación y tocá su link; si no, pedile a Manu que te invite.",
   emailInvalido: "Ese email no parece válido. Revisalo.",
   codigoInvalido: "El código son 6 números. Revisalo.",
   esperar: "Pediste muchos códigos seguidos. Esperá un minuto y probá de nuevo.",

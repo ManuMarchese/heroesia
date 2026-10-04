@@ -7,7 +7,7 @@ Lo que ya está probado sin servicios reales: tests (dominio, datos, migración 
 ## 1. Entrar (2 min)
 - [ ] A pide el código con su email y entra **con el link del mail**. Llega a la Base del héroe.
 - [ ] B entra **con el código de 6 dígitos** escrito en la pantalla Entrar (sin tocar el link).
-- [ ] Un email **no invitado** pide código: ve "Ese email no está invitado. Pedile a Manu que te invite." y no le llega nada.
+- [ ] Un email **no invitado** pide código: ve "No encontramos una cuenta activa con ese email. Si ya te invitaron, abrí el mail de invitación y tocá su link; si no, pedile a Manu que te invite." y no le llega nada.
 - [ ] Al abrir Inicio por primera vez en el día, el XP de la tarjeta de héroe sube 5 (entrar), y no vuelve a subir al recargar.
 
 ## 2. Publicar y reaccionar (2 a 3 min)

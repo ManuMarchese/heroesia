@@ -17,7 +17,7 @@ Pasos para poner Heroes IA en marcha antes de invitar a tus amigos (D16, D18, D3
 
 ## 3. Apagar los registros públicos
 1. En la configuración de Auth, apagá **"Allow new users to sign up"** (nombre según la guía de Supabase leída en el repo oficial, Q8).
-2. Por qué: así solo entran las personas que vos invitás. Un email no invitado ve "Ese email no está invitado. Pedile a Manu que te invite."
+2. Por qué: así solo entran las personas que vos invitás. Un email no invitado ve "No encontramos una cuenta activa con ese email. Si ya te invitaron, abrí el mail de invitación y tocá su link; si no, pedile a Manu que te invite."
 
 ## 4. Configurar tu SMTP propio
 1. Con el email por defecto de Supabase el link mágico solo llega a miembros de tu organización y con un tope de 2 por hora (Q1, D30): para tus amigos hace falta un SMTP propio.
